@@ -182,8 +182,6 @@ const bgLayer     = document.getElementById('bg-layer');
 const particlesEl = document.getElementById('particles');
 const unitToggle  = document.getElementById('unit-toggle');
 const refreshInfo = document.getElementById('refresh-info');
-const headerSub   = document.getElementById('header-sub');
-const headerMascot= document.getElementById('header-mascot');
 const radarBtn    = document.getElementById('radar-btn');
 const recenterBtn = document.getElementById('recenter-btn');
 
@@ -271,9 +269,6 @@ function renderWeather(d, city, country) {
   const theme     = isNight && rawTheme === 'sunny' ? 'clear-night' : rawTheme;
 
   setBackground(theme);
-
-  headerMascot.textContent = MASCOTS[theme] || '🌤️';
-  headerSub.textContent    = VIBES[theme] || 'Check the weather!';
 
   document.getElementById('city-name').textContent = city + (country ? ', ' + country : '');
   document.getElementById('now-date').textContent  =
