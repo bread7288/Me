@@ -990,6 +990,14 @@ function initAgePicker() {
         const input = document.getElementById('school-search');
         if (input) input.placeholder = `Search ${info.types.split(',')[0]}s near you...`;
       }
+      // Re-render packing list with age-specific items
+      if (currentData) {
+        const c = currentData.current;
+        const [,,rawT] = wmo(c.weather_code);
+        const now = new Date(), sr = new Date(currentData.daily.sunrise[0]), ss = new Date(currentData.daily.sunset[0]);
+        const theme2 = (now < sr || now > ss) && rawT === 'sunny' ? 'clear-night' : rawT;
+        renderFieldTrip(theme2);
+      }
     });
   });
   // Set initial label
@@ -1233,6 +1241,118 @@ initSchoolPicker();
   });
 })();
 
+// ── Age-based packing items ──
+const FT_AGE_ITEMS = {
+  // Pre-K / Kindergarten (4–5)
+  4: { label:'🧸 Pre-K Extras', items:[
+    ['🧸','Comfort toy or stuffed animal'],['🧤','Extra pair of gloves'],
+    ['🩲','Change of clothes (just in case!)'],['🍪','Extra snacks — little tummies get hungry fast!'],
+    ['🏷️','Name tag on everything'],['🩹','Bandaids (for tiny boo-boos)'],
+    ['🚽','Know where the bathrooms are right away!'],['🤝','Hold a buddy\'s hand in crowds'],
+  ]},
+  5: { label:'⭐ Kindergarten Extras', items:[
+    ['🧸','Comfort toy if it helps'],['🍪','Extra snacks'],
+    ['🩲','Change of clothes'],['🏷️','Name label on backpack'],
+    ['🩹','Bandaids'],['📞','Know your parent\'s phone number by heart!'],
+    ['🤝','Stay with your group always'],['😊','Big smiles — it\'s going to be so fun!'],
+  ]},
+  // Elementary (6–10)
+  6: { label:'📖 1st Grade Extras', items:[
+    ['📔','Small notebook to draw what you see'],['✏️','Pencil for notes'],
+    ['🍎','Extra snack'],['🩹','Bandaids'],['🧴','Sunscreen if going outside'],
+    ['😊','Ask your teacher if you have questions!'],
+  ]},
+  7: { label:'📖 2nd Grade Extras', items:[
+    ['📔','Journal or notebook'],['✏️','Pencil + colored pencils'],
+    ['🍎','Extra snack'],['🧴','Sunscreen'],['🩹','Bandaids'],
+    ['🔍','Magnifying glass (so cool for nature trips!)'],
+    ['❓','Write down questions to ask the guide!'],
+  ]},
+  8: { label:'📖 3rd Grade Extras', items:[
+    ['📔','Field journal for observations'],['✏️','Pencils'],
+    ['🍎','Extra snack'],['🧴','Sunscreen'],['🩹','Bandaids'],
+    ['🔍','Magnifying glass'],['📸','Camera or phone for photos'],
+    ['❓','Prepare 3 questions to ask!'],
+  ]},
+  9: { label:'📖 4th Grade Extras', items:[
+    ['📓','Science journal'],['✏️','Pencils + eraser'],
+    ['🔍','Magnifying glass'],['📸','Camera'],['🧴','Sunscreen'],
+    ['🩹','Bandaids'],['🗺️','Check the map before you go'],
+    ['❓','Research your destination beforehand!'],
+  ]},
+  10: { label:'📖 5th Grade Extras', items:[
+    ['📓','Field notebook'],['✏️','Pens + pencils'],
+    ['📸','Camera for the trip'],['🔋','Portable charger'],
+    ['🧴','Sunscreen'],['🩹','Bandaids'],['🗺️','Study the map'],
+    ['📚','Read up on where you\'re going!'],
+  ]},
+  // Middle school (11–13)
+  11: { label:'🎒 6th Grade Extras', items:[
+    ['📒','Notebook for notes'],['🖊️','Pens'],['📸','Camera/phone'],
+    ['🔋','Portable charger'],['🎧','Headphones for audio guides'],
+    ['🧴','Sunscreen & lip balm'],['💳','Know if you need spending money'],
+    ['📍','Screenshot the meeting spot just in case'],
+  ]},
+  12: { label:'🎮 7th Grade Extras', items:[
+    ['📒','Notebook'],['🖊️','Pens'],['📸','Phone for photos'],
+    ['🔋','Portable charger'],['🎧','Headphones'],
+    ['💳','Spending money for gift shop'],['🧴','Sunscreen'],
+    ['📍','Save the trip location in your phone'],['👟','Comfy shoes — you\'ll walk a lot!'],
+  ]},
+  13: { label:'🎮 8th Grade Extras', items:[
+    ['📒','Notebook'],['🖊️','Pens'],['📱','Phone (fully charged)'],
+    ['🔋','Portable charger'],['🎧','Headphones'],
+    ['💳','Spending money'],['🧴','Sunscreen + deodorant'],
+    ['📍','Know the schedule & meeting points'],['🗺️','Download offline maps'],
+  ]},
+  // High school (14–17)
+  14: { label:'🏈 9th Grade Extras', items:[
+    ['📱','Phone (fully charged)'],['🔋','Portable charger'],
+    ['📒','Notebook for notes'],['💳','Debit card + cash'],
+    ['🧴','Sunscreen'],['💊','Any prescription meds'],
+    ['🎧','Earbuds'],['🗺️','Know the schedule ahead of time'],
+    ['📸','Document it for your portfolio!'],
+  ]},
+  15: { label:'🏈 10th Grade Extras', items:[
+    ['📱','Fully charged phone'],['🔋','Portable charger'],
+    ['📒','Notes for the trip'],['💳','Some spending money'],
+    ['🧴','Sunscreen + lip balm'],['💊','Any meds you need'],
+    ['🎧','Earbuds'],['📸','Take photos for class projects'],
+    ['❓','Prepare questions if there\'s a speaker or tour guide'],
+  ]},
+  16: { label:'🚗 11th Grade Extras', items:[
+    ['📱','Phone'],['🔋','Portable charger'],['💳','Debit card'],
+    ['📒','Notepad for reflection notes'],['🎧','Earbuds'],
+    ['🧴','SPF 50+ — protect your skin!'],['💊','Any meds'],
+    ['📸','Camera for college portfolio'],
+    ['🗒️','Think about how this trip connects to your future!'],
+  ]},
+  17: { label:'🎓 12th Grade Extras', items:[
+    ['📱','Phone (fully charged)'],['🔋','Portable charger'],
+    ['💳','Spending money'],['🎧','Earbuds'],
+    ['📒','Notebook — final year, make it count!'],
+    ['🧴','Sunscreen'],['💊','Any meds'],
+    ['📸','Capture the memories — last field trip!'],
+    ['🎉','Enjoy it — it\'s your senior year!'],
+  ]},
+  // College (18–19+)
+  18: { label:'🎉 College Extras', items:[
+    ['📱','Phone'],['🔋','Portable charger'],['💳','Card + cash'],
+    ['🎧','Earbuds'],['💻','Laptop if needed for notes'],
+    ['🧴','Sunscreen'],['💊','Any prescriptions'],
+    ['🧃','Hydrate — college days are long!'],
+    ['📒','Class notes or assignment brief'],
+  ]},
+  19: { label:'🏛️ Adult/College Extras', items:[
+    ['📱','Phone'],['🔋','Portable charger'],['💳','Payment method'],
+    ['💻','Laptop or tablet'],['🎧','Earbuds'],
+    ['🧴','Sunscreen'],['💊','Any medications'],
+    ['☕','Coffee or energy drink for focus'],
+    ['📒','Research brief or project notes'],
+    ['🗂️','Business cards if networking'],
+  ]},
+};
+
 // ── Field Trip Packing ──
 const FT_ALWAYS = [
   ['🎒','Backpack'],['💧','Full water bottle'],['🍎','Snack or lunch'],
@@ -1472,10 +1592,12 @@ function renderFieldTrip(theme) {
   const weatherItems = FT_WEATHER[theme] || FT_WEATHER.cloudy;
   const tripExtra = FT_TRIP_EXTRAS[currentTripType] || { label:'🎒 Trip Extras', tip:'', items:[] };
   const themeLabel = theme.charAt(0).toUpperCase() + theme.slice(1).replace('-',' ');
+  const ageGroup = FT_AGE_ITEMS[_userAge] || null;
   const allGroups = [
     { label: '✅ Always Bring', items: FT_ALWAYS },
     { label: `${MASCOTS[theme]||'🌤️'} For Today's ${themeLabel} Weather`, items: weatherItems },
     { label: tripExtra.label, items: tripExtra.items, tip: tripExtra.tip },
+    ...(ageGroup ? [{ label: ageGroup.label, items: ageGroup.items }] : []),
   ];
   intro.textContent = selectedSchool
     ? `🏫 ${selectedSchool} — tap each item to check it off!`
