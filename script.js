@@ -950,65 +950,111 @@ let selectedSchool = localStorage.getItem('wes_school') || '';
 let _schoolTimer = null;
 let _lastSchoolQ = '';
 
-// Search OpenStreetMap Nominatim — knows every school on Earth
-async function searchSchoolsWorld(q) {
+// All school-type amenity values for Overpass + Nominatim filtering
+const _EDU_TYPES = new Set([
+  'school','university','college','kindergarten','library',
+  'language_school','music_school','driving_school','childcare',
+  'preschool','prep_school','tutoring_centre','research_institute',
+  'training','dancing_school','art_school','cooking_school',
+  'surf_school','ski_school','flight_school','sailing_school',
+  'martial_arts_school','seminary','theological_college',
+  'academy','institute','educational','education','vocational',
+  'polytechnic','boarding_school',
+]);
+const _EDU_WORDS = [
+  'school','academy','elementary','high school','middle school',
+  'college','university','institute','learning','education',
+  'prep','preparatory','primary','secondary','junior','senior',
+  'nursery','kindergarten','preschool','pre-school','infant',
+  'early childhood','charter','magnet','montessori','waldorf',
+  'steiner','stem','vocational','trade school','technical',
+  'polytechnic','seminary','theological','boarding','military school',
+  'homeschool','language school','music school','art school',
+  'dance school','drama school','ballet school','martial arts',
+  'coding school','culinary school','nursing school','law school',
+  'medical school','dental school','pharmacy school','veterinary school',
+  'agricultural school','aviation school','flight school',
+  'driving school','swim school','sports academy','tutoring',
+  'école','ecole','lycée','lycee','gymnasium',
+  'grundschule','realschule','gesamtschule','hauptschule',
+  'scuola','escuela','colegio','instituto','liceo','schule',
+  'skole','skola',
+];
+
+function _fmtSchoolResult(name, city, state, country) {
+  const parts = [city, state, country].filter(Boolean);
+  return name + (parts.length ? ' — ' + parts.join(', ') : '');
+}
+
+// Source 1: Nominatim geocoding search
+async function _searchNominatim(q) {
   try {
     const params = new URLSearchParams({
-      q, format:'json', limit:10, addressdetails:1, dedupe:1,
+      q, format:'json', limit:12, addressdetails:1, dedupe:1,
       'accept-language':'en'
     });
     const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
-      headers: { 'User-Agent': 'WesWeatherApp/1.0' }
+      headers:{ 'User-Agent':'WesWeatherApp/1.0' }
     });
     const data = await res.json();
-    const EDU_TYPES = new Set([
-      // OSM amenity types
-      'school','university','college','kindergarten','library',
-      'language_school','music_school','driving_school','childcare',
-      'preschool','prep_school','tutoring_centre','research_institute',
-      'training','dancing_school','art_school','cooking_school',
-      'surf_school','ski_school','flight_school','sailing_school',
-      'martial_arts_school','seminary','theological_college',
-      // OSM building / landuse types
-      'academy','institute','educational','school_block',
-      // generic
-      'education','vocational','polytechnic','boarding_school',
-    ]);
-    const EDU_WORDS = [
-      // core
-      'school','academy','elementary','high school','middle school',
-      'college','university','institute','learning','education',
-      // level/age
-      'prep','preparatory','primary','secondary','junior','senior',
-      'nursery','kindergarten','preschool','pre-school','infant',
-      'early childhood',
-      // type
-      'charter','magnet','montessori','waldorf','steiner','stem',
-      'vocational','trade school','technical','polytechnic','seminary',
-      'theological','boarding','military school','homeschool',
-      'language school','music school','art school','dance school',
-      'drama school','ballet school','martial arts','coding school',
-      'culinary school','nursing school','law school','medical school',
-      'dental school','pharmacy school','veterinary school',
-      'agricultural school','aviation school','flight school',
-      'driving school','swim school','sports academy','tutoring',
-      // international / multilingual
-      'école','ecole','lycée','lycee','gymnasium',
-      'grundschule','realschule','gesamtschule','hauptschule',
-      'scuola','escuela','colegio','instituto','liceo','schule',
-      'skole','skola',
-    ];
     return data.filter(r => {
       const dn = (r.display_name||'').toLowerCase();
-      return EDU_TYPES.has(r.type) || EDU_TYPES.has(r.class) ||
-             EDU_WORDS.some(w => dn.includes(w));
+      return _EDU_TYPES.has(r.type) || _EDU_TYPES.has(r.class) ||
+             _EDU_WORDS.some(w => dn.includes(w));
     }).map(r => {
-      const a = r.address || {};
+      const a = r.address||{};
       const name = r.name || a.amenity || a.building || q;
-      const parts = [a.city||a.town||a.village||a.county||'', a.state||a.state_district||'', a.country||''].filter(Boolean);
-      return name + (parts.length ? ' — ' + parts.join(', ') : '');
+      return _fmtSchoolResult(name,
+        a.city||a.town||a.village||a.county||'',
+        a.state||a.state_district||'',
+        a.country||'');
     });
   } catch { return []; }
+}
+
+// Source 2: Overpass API — directly queries OSM for education amenities
+async function _searchOverpass(q) {
+  try {
+    const safe = q.replace(/["\\/]/g,'');
+    const amenities = [..._EDU_TYPES].join('|');
+    // Search nodes, ways, and relations tagged as education with matching name
+    const overpassQ = `
+[out:json][timeout:10];
+(
+  node["amenity"~"${amenities}"]["name"~"${safe}",i];
+  way["amenity"~"${amenities}"]["name"~"${safe}",i];
+  node["building"~"school|university|college"]["name"~"${safe}",i];
+  way["building"~"school|university|college"]["name"~"${safe}",i];
+);
+out center tags 15;`;
+    const res = await fetch('https://overpass-api.de/api/interpreter', {
+      method:'POST',
+      body:'data=' + encodeURIComponent(overpassQ),
+      headers:{ 'Content-Type':'application/x-www-form-urlencoded' }
+    });
+    const data = await res.json();
+    return (data.elements||[]).map(el => {
+      const t = el.tags||{};
+      const name = t.name||t['name:en']||'';
+      if (!name) return null;
+      const city   = t['addr:city']||t['addr:town']||'';
+      const state  = t['addr:state']||t['addr:province']||'';
+      const country= t['addr:country']||'';
+      return _fmtSchoolResult(name, city, state, country);
+    }).filter(Boolean);
+  } catch { return []; }
+}
+
+// Combined: run both sources in parallel, merge + deduplicate
+async function searchSchoolsWorld(q) {
+  const [nom, ovp] = await Promise.all([_searchNominatim(q), _searchOverpass(q)]);
+  const seen = new Set();
+  return [...nom, ...ovp].filter(s => {
+    const key = s.toLowerCase().trim();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 15);
 }
 
 function initSchoolPicker() {
