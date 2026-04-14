@@ -7,12 +7,25 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Animated background -->
+  <div class="bg-layer" id="bg-layer">
+    <div class="particles" id="particles"></div>
+  </div>
+
   <div class="app">
 
-    <div class="search-bar">
-      <input id="city-input" type="text" placeholder="Search city..." autocomplete="off" />
-      <button id="search-btn">Search</button>
-      <button id="locate-btn" title="Use my location">&#9678;</button>
+    <!-- SEARCH + CONTROLS -->
+    <div class="top-bar">
+      <div class="search-bar">
+        <input id="city-input" type="text" placeholder="Search city..." autocomplete="off" />
+        <button id="search-btn">Search</button>
+        <button id="locate-btn" title="Use my location">&#9678;</button>
+      </div>
+      <div class="controls">
+        <button id="unit-toggle" class="unit-btn">°C</button>
+        <div class="refresh-info" id="refresh-info"></div>
+      </div>
     </div>
 
     <div id="loading" class="hidden">
@@ -28,30 +41,40 @@
 
       <!-- CURRENT -->
       <div class="current-card">
-        <div class="location">
-          <span id="city-name"></span>
-          <span id="country"></span>
-        </div>
-        <div class="date-time" id="datetime"></div>
-        <div class="main-info">
-          <div class="temp-block">
-            <div class="temp" id="temp"></div>
-            <div class="feels-like">Feels like <span id="feels"></span></div>
+        <div class="card-top">
+          <div>
+            <div class="location">
+              <span id="city-name"></span>
+              <span id="country"></span>
+            </div>
+            <div class="date-time" id="datetime"></div>
           </div>
           <div class="condition-block">
             <div class="condition-icon" id="cond-icon"></div>
             <div class="condition-text" id="cond-text"></div>
           </div>
         </div>
+
+        <div class="main-temp">
+          <div class="temp" id="temp"></div>
+          <div class="feels-like">Feels like <span id="feels"></span></div>
+        </div>
+
         <div class="details-grid">
           <div class="detail"><span class="label">Humidity</span><span id="humidity"></span></div>
           <div class="detail"><span class="label">Wind</span><span id="wind"></span></div>
+          <div class="detail"><span class="label">Wind Dir</span><span id="wind-dir"></span></div>
           <div class="detail"><span class="label">Visibility</span><span id="visibility"></span></div>
           <div class="detail"><span class="label">Pressure</span><span id="pressure"></span></div>
+          <div class="detail"><span class="label">Dew Point</span><span id="dewpoint"></span></div>
+          <div class="detail"><span class="label">UV Index</span><span id="uv"></span></div>
           <div class="detail"><span class="label">Sunrise</span><span id="sunrise"></span></div>
           <div class="detail"><span class="label">Sunset</span><span id="sunset"></span></div>
         </div>
       </div>
+
+      <!-- AQI BANNER -->
+      <div class="aqi-banner" id="aqi-banner"></div>
 
       <!-- HOURLY -->
       <h3 class="section-label">Next 24 Hours</h3>
@@ -62,6 +85,9 @@
       <!-- 7-DAY -->
       <h3 class="section-label">7-Day Forecast</h3>
       <div class="daily-list" id="daily-list"></div>
+
+      <!-- WEATHER TIP -->
+      <div class="tip-card" id="tip-card"></div>
 
     </div>
   </div>
