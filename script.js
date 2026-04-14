@@ -1342,78 +1342,75 @@ const FT_AGE_ITEMS = {
     ['🚫','Don\'t talk to strangers who approach you alone'],
     ['📞','Memorize at least one parent\'s number'],
   ]},
-  // Middle school (11–13) — tech OK now, still add awareness
+  // Middle school (11–13)
   11: { label:'🎒 6th Grade Extras', items:[
-    ['📒','Notebook for notes'],['🖊️','Pens'],
-    ['📱','Phone (charged)'],['🔋','Portable charger'],
-    ['🧴','Sunscreen & lip balm'],['💳','Spending money'],
-    ['📍','Screenshot the meeting spot — know where to go if separated'],
-    ['👀','Stay aware: crowded places can be overwhelming — stick with friends'],
+    ['📒','Small notebook'],['🖊️','One pen'],
+    ['📱','Phone (charged) — keep it in your pocket!'],
+    ['🧴','Sunscreen & lip balm'],['💳','Spending money (coins are heavy — bring a card!)'],
+    ['📍','Screenshot the meeting spot in case you get separated'],
+    ['👀','Stay aware — stick with friends in crowds'],
     ['🚫','Don\'t share your location with people you don\'t know'],
+    ['🪶','Pack light — you\'ll carry it all day!'],
   ]},
   12: { label:'🎮 7th Grade Extras', items:[
-    ['📒','Notebook'],['🖊️','Pens'],
-    ['📱','Phone for photos & emergencies'],['🔋','Portable charger'],
-    ['💳','Spending money for gift shop'],['🧴','Sunscreen'],
-    ['👟','Comfy shoes — you\'ll walk a lot!'],
+    ['📒','Small notebook'],['🖊️','One pen'],
+    ['📱','Phone — keep it in your pocket, not a heavy bag!'],
+    ['💳','A little spending money'],['🧴','Small sunscreen'],
+    ['👟','Comfy shoes — you\'ll walk a LOT!'],
     ['📍','Save the trip address in your phone'],
-    ['👀','Crowd awareness — keep your group together'],
-    ['🚫','Don\'t wander off alone in unfamiliar places'],
+    ['👀','Keep your group together in crowds'],
+    ['🪶','Leave heavy stuff at home — your back will thank you!'],
   ]},
   13: { label:'🎮 8th Grade Extras', items:[
-    ['📒','Notebook'],['🖊️','Pens'],
-    ['📱','Phone (fully charged)'],['🔋','Portable charger'],
-    ['💳','Spending money'],['🧴','Sunscreen + deodorant'],
+    ['📒','Small notebook'],['🖊️','Pen'],
+    ['📱','Phone in your pocket'],
+    ['💳','A little cash'],['🧴','Small sunscreen'],
     ['📍','Know the schedule & meeting points'],
-    ['👀','Be aware of your surroundings at all times'],
+    ['👀','Stay aware of your surroundings'],
     ['🚫','Trust your gut — if something feels wrong, tell an adult'],
+    ['🪶','Less stuff = easier day. Leave the heavy bag at home!'],
   ]},
   // High school (14–17)
   14: { label:'🏈 9th Grade Extras', items:[
-    ['📱','Phone (fully charged)'],['🔋','Portable charger'],
-    ['📒','Notebook for notes'],['💳','Debit card + cash'],
+    ['📱','Phone — pocket it, don\'t bag it'],
+    ['📒','Small notepad'],['💳','A little cash or card'],
     ['🧴','Sunscreen'],['💊','Any prescription meds'],
-    ['🎧','Earbuds'],['🗺️','Know the schedule ahead of time'],
-    ['📸','Document it for your portfolio!'],
-    ['👀','Stay aware in crowds and public spaces'],
+    ['🗺️','Know the schedule ahead of time'],
+    ['📸','Use your phone for photos — no heavy camera needed!'],
+    ['👀','Stay aware in crowds'],
+    ['🪶','Seriously — go light. You\'re walking all day!'],
   ]},
   15: { label:'🏈 10th Grade Extras', items:[
-    ['📱','Fully charged phone'],['🔋','Portable charger'],
-    ['📒','Notes for the trip'],['💳','Some spending money'],
-    ['🧴','Sunscreen + lip balm'],['💊','Any meds you need'],
-    ['🎧','Earbuds'],['📸','Take photos for class projects'],
-    ['❓','Prepare questions if there\'s a speaker or tour guide'],
+    ['📱','Phone in your pocket'],
+    ['📒','Small notebook'],['💳','Spending money'],
+    ['🧴','Sunscreen'],['💊','Any meds you need'],
+    ['❓','Prepare questions for the speaker or guide'],
+    ['🪶','One small bag max — no backpack bricks!'],
   ]},
   16: { label:'🚗 11th Grade Extras', items:[
-    ['📱','Phone'],['🔋','Portable charger'],['💳','Debit card'],
-    ['📒','Notepad for reflection notes'],['🎧','Earbuds'],
-    ['🧴','SPF 50+ — protect your skin!'],['💊','Any meds'],
-    ['📸','Camera for college portfolio'],
+    ['📱','Phone in your pocket'],['💳','Card or small cash'],
+    ['📒','Tiny notepad'],['🧴','Travel-size sunscreen'],['💊','Any meds'],
     ['🗒️','Think about how this trip connects to your future!'],
+    ['🪶','Light bag = more energy for the actual trip!'],
   ]},
   17: { label:'🎓 12th Grade Extras', items:[
-    ['📱','Phone (fully charged)'],['🔋','Portable charger'],
-    ['💳','Spending money'],['🎧','Earbuds'],
-    ['📒','Notebook — final year, make it count!'],
-    ['🧴','Sunscreen'],['💊','Any meds'],
-    ['📸','Capture the memories — last field trip!'],
+    ['📱','Phone — it\'s your camera AND notes app'],
+    ['💳','Spending money'],['🧴','Small sunscreen'],['💊','Any meds'],
     ['🎉','Enjoy it — it\'s your senior year!'],
+    ['🪶','Pack light — your arms will thank you by the end of the day!'],
   ]},
   // College (18–19+)
   18: { label:'🎉 College Extras', items:[
-    ['📱','Phone'],['🔋','Portable charger'],['💳','Card + cash'],
-    ['🎧','Earbuds'],['💻','Laptop if needed for notes'],
-    ['🧴','Sunscreen'],['💊','Any prescriptions'],
-    ['🧃','Hydrate — college days are long!'],
-    ['📒','Class notes or assignment brief'],
+    ['📱','Phone'],['💳','Card + small cash'],
+    ['🧴','Travel-size sunscreen'],['💊','Any prescriptions'],
+    ['📒','Small notepad — leave the laptop at home!'],
+    ['🪶','Field trips = walking. Go light!'],
   ]},
   19: { label:'🏛️ Adult/College Extras', items:[
-    ['📱','Phone'],['🔋','Portable charger'],['💳','Payment method'],
-    ['💻','Laptop or tablet'],['🎧','Earbuds'],
+    ['📱','Phone'],['💳','Card'],
     ['🧴','Sunscreen'],['💊','Any medications'],
-    ['☕','Coffee or energy drink for focus'],
-    ['📒','Research brief or project notes'],
-    ['🗂️','Business cards if networking'],
+    ['📒','Small notepad for key points'],
+    ['🪶','No laptops, no heavy bags — you\'re on your feet all day!'],
   ]},
 };
 
@@ -1423,13 +1420,13 @@ const FT_ALWAYS = [
   ['💊','Any medicine you need'],['📝','Permission slip'],['🪪','School ID'],
 ];
 const FT_WEATHER = {
-  sunny:        [['🧴','Sunscreen'],['🕶️','Sunglasses'],['🧢','Hat or cap'],['👕','Light breathable clothes']],
-  'clear-night':[['🔦','Flashlight'],['🧥','Warm jacket'],['🌡️','Hand warmers'],['🔭','Binoculars for stars']],
-  cloudy:       [['🧥','Light jacket'],['☔','Compact umbrella just in case'],['👟','Comfy walking shoes']],
-  rainy:        [['☔','Umbrella'],['🥾','Rain boots'],['🧥','Rain jacket'],['🧦','Extra socks'],['🛍️','Bag for wet stuff']],
-  snowy:        [['🧤','Gloves'],['🧣','Scarf'],['🥾','Snow boots'],['🧥','Heavy warm coat'],['🧦','Thick socks'],['🌡️','Hand warmers']],
-  stormy:       [['📞','Emergency contact #'],['☔','Full rain gear'],['🏠','Check if trip is still on!'],['🔦','Flashlight']],
-  foggy:        [['🧥','Jacket'],['🔦','Small flashlight'],['👟','Good grip shoes'],['🌡️','Layer up!']],
+  sunny:        [['🧴','Sunscreen (small travel size)'],['🕶️','Sunglasses'],['🧢','Hat or cap'],['👕','Light breathable clothes']],
+  'clear-night':[['🔦','Small flashlight'],['🧥','Warm jacket (wear it, don\'t bag it!)'],['🧤','Gloves in your pocket']],
+  cloudy:       [['🧥','Light jacket (wear it, not carry it!)'],['👟','Comfy walking shoes']],
+  rainy:        [['☔','Compact fold-up umbrella'],['🧥','Rain jacket (wear it!)'],['🧦','Extra socks (rolled up small)']],
+  snowy:        [['🧤','Gloves'],['🧣','Scarf (wrap it on!)'],['🥾','Snow boots'],['🧥','Warm coat (wear it, don\'t pack it!)']],
+  stormy:       [['📞','Know your emergency contact #'],['🏠','Check if trip is still on first!'],['🧥','Rain jacket']],
+  foggy:        [['🧥','Jacket (wear it!)'],['👟','Good grip shoes'],['🪶','Layers are better than heavy coats!']],
 };
 const FT_TRIP_EXTRAS = {
   // ── Farms ──
@@ -1662,9 +1659,8 @@ function renderFieldTrip(theme) {
     { label: tripExtra.label, items: tripExtra.items, tip: tripExtra.tip },
     ...(ageGroup ? [{ label: ageGroup.label, items: ageGroup.items }] : []),
   ];
-  intro.textContent = selectedSchool
-    ? `🏫 ${selectedSchool} — tap each item to check it off!`
-    : 'Tap each item to check it off your list!';
+  intro.innerHTML = (selectedSchool ? `🏫 <b>${selectedSchool}</b> — ` : '') +
+    'Tap each item to check it off! <span style="display:block;margin-top:6px;font-size:.9em;color:#e67e22;">🪶 Pro tip: Wear your jacket instead of packing it — you\'ll carry this bag ALL day!</span>';
   groups.innerHTML = '';
   let totalItems = 0, checkedItems = 0;
   allGroups.forEach(group => {
