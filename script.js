@@ -1243,67 +1243,130 @@ initSchoolPicker();
 
 // ── Age-based packing items ──
 const FT_AGE_ITEMS = {
-  // Pre-K / Kindergarten (4–5)
-  4: { label:'🧸 Pre-K Extras', items:[
-    ['🧸','Comfort toy or stuffed animal'],['🧤','Extra pair of gloves'],
-    ['🩲','Change of clothes (just in case!)'],['🍪','Extra snacks — little tummies get hungry fast!'],
-    ['🏷️','Name tag on everything'],['🩹','Bandaids (for tiny boo-boos)'],
-    ['🚽','Know where the bathrooms are right away!'],['🤝','Hold a buddy\'s hand in crowds'],
+  // Pre-K (4)
+  4: { label:'🧸 Pre-K Safety & Extras', items:[
+    ['🧸','Comfort toy or stuffed animal'],
+    ['🩲','Change of clothes (just in case!)'],
+    ['🍪','Extra snacks — little tummies get hungry!'],
+    ['🏷️','Name tag on EVERYTHING — backpack, jacket, lunchbox'],
+    ['🩹','Bandaids for tiny boo-boos'],
+    ['🚽','Tell your teacher RIGHT AWAY if you need the bathroom'],
+    ['🤝','ALWAYS hold a buddy\'s hand in crowds'],
+    ['👀','Watch out for strangers — only go with your teacher!'],
+    ['🆘','If you get lost: STOP, STAY, YELL your teacher\'s name!'],
+    ['🏷️','Know your own name & teacher\'s name to tell a helper'],
+    ['🚫','NEVER go anywhere with someone you don\'t know'],
+    ['👷','If lost, find a worker in a uniform or name tag'],
   ]},
-  5: { label:'⭐ Kindergarten Extras', items:[
-    ['🧸','Comfort toy if it helps'],['🍪','Extra snacks'],
-    ['🩲','Change of clothes'],['🏷️','Name label on backpack'],
-    ['🩹','Bandaids'],['📞','Know your parent\'s phone number by heart!'],
-    ['🤝','Stay with your group always'],['😊','Big smiles — it\'s going to be so fun!'],
+  // Kindergarten (5)
+  5: { label:'⭐ Kindergarten Safety & Extras', items:[
+    ['🧸','Comfort toy if it helps'],
+    ['🍪','Extra snacks'],
+    ['🩲','Change of clothes'],
+    ['🏷️','Name label on backpack & jacket'],
+    ['🩹','Bandaids'],
+    ['📞','Memorize your parent\'s phone number — say it out loud right now!'],
+    ['🤝','ALWAYS stay with your group — never wander off!'],
+    ['👀','Watch out for people you don\'t know'],
+    ['🆘','If lost: find a worker with a name tag and say your teacher\'s name'],
+    ['🚫','Never follow a stranger even if they say your parents sent them'],
+    ['👋','Count your group — know who is around you!'],
+    ['😊','Big smiles — it\'s going to be so fun!'],
   ]},
-  // Elementary (6–10)
-  6: { label:'📖 1st Grade Extras', items:[
-    ['📔','Small notebook to draw what you see'],['✏️','Pencil for notes'],
-    ['🍎','Extra snack'],['🩹','Bandaids'],['🧴','Sunscreen if going outside'],
-    ['😊','Ask your teacher if you have questions!'],
+  // 1st Grade (6)
+  6: { label:'📖 1st Grade Safety & Extras', items:[
+    ['📔','Small notebook to draw what you see'],
+    ['✏️','Pencils + crayons'],
+    ['🍎','Extra snack'],
+    ['🩹','Bandaids'],
+    ['🧴','Sunscreen'],
+    ['🤝','Stay with your class at ALL times'],
+    ['👀','If someone you don\'t know tries to talk to you alone — go find your teacher'],
+    ['🆘','Lost? STOP moving. Find a store worker or security guard'],
+    ['📞','Know your parent\'s phone number by heart'],
+    ['🚫','Never go to a car or building with a stranger'],
   ]},
-  7: { label:'📖 2nd Grade Extras', items:[
-    ['📔','Journal or notebook'],['✏️','Pencil + colored pencils'],
-    ['🍎','Extra snack'],['🧴','Sunscreen'],['🩹','Bandaids'],
+  // 2nd Grade (7)
+  7: { label:'📖 2nd Grade Safety & Extras', items:[
+    ['📔','Journal or notebook'],
+    ['✏️','Pencil + colored pencils'],
+    ['🍎','Extra snack'],
+    ['🧴','Sunscreen'],
+    ['🩹','Bandaids'],
     ['🔍','Magnifying glass (so cool for nature trips!)'],
     ['❓','Write down questions to ask the guide!'],
+    ['👀','Watch out for strangers — stay with your group'],
+    ['🤝','Buddy system — always know where your buddy is!'],
+    ['🆘','Lost? Find an employee with a name tag, tell them your teacher\'s name'],
+    ['📞','Know your home phone number or parent\'s number'],
   ]},
-  8: { label:'📖 3rd Grade Extras', items:[
-    ['📔','Field journal for observations'],['✏️','Pencils'],
-    ['🍎','Extra snack'],['🧴','Sunscreen'],['🩹','Bandaids'],
-    ['🔍','Magnifying glass'],['📸','Camera or phone for photos'],
-    ['❓','Prepare 3 questions to ask!'],
+  // 3rd Grade (8)
+  8: { label:'📖 3rd Grade Safety & Extras', items:[
+    ['📔','Field journal for observations'],
+    ['✏️','Pencils'],
+    ['🍎','Extra snack'],
+    ['🧴','Sunscreen'],
+    ['🩹','Bandaids'],
+    ['🔍','Magnifying glass'],
+    ['❓','Prepare 3 questions to ask the guide!'],
+    ['👀','People safety: stay where your teacher can see you'],
+    ['🤝','Buddy system — check on your buddy every 5 minutes'],
+    ['🆘','Lost? STOP. Find a worker. Tell them your school name'],
+    ['🚫','Don\'t take gifts or food from strangers'],
   ]},
-  9: { label:'📖 4th Grade Extras', items:[
-    ['📓','Science journal'],['✏️','Pencils + eraser'],
-    ['🔍','Magnifying glass'],['📸','Camera'],['🧴','Sunscreen'],
-    ['🩹','Bandaids'],['🗺️','Check the map before you go'],
+  // 4th Grade (9)
+  9: { label:'📖 4th Grade Safety & Extras', items:[
+    ['📓','Science journal'],
+    ['✏️','Pencils + eraser'],
+    ['🔍','Magnifying glass'],
+    ['🧴','Sunscreen'],
+    ['🩹','Bandaids'],
+    ['🗺️','Check the map of the place before you go'],
     ['❓','Research your destination beforehand!'],
+    ['👀','Crowd safety — stay close, busy places can get confusing'],
+    ['🤝','Buddy system — never split from your buddy'],
+    ['🆘','Emergency plan: agree on a meet-up spot with your teacher'],
+    ['🚫','Don\'t share personal info with strangers (your address, school, etc.)'],
   ]},
-  10: { label:'📖 5th Grade Extras', items:[
-    ['📓','Field notebook'],['✏️','Pens + pencils'],
-    ['📸','Camera for the trip'],['🔋','Portable charger'],
-    ['🧴','Sunscreen'],['🩹','Bandaids'],['🗺️','Study the map'],
+  // 5th Grade (10)
+  10: { label:'📖 5th Grade Safety & Extras', items:[
+    ['📓','Field notebook'],
+    ['✏️','Pens + pencils'],
+    ['🧴','Sunscreen'],
+    ['🩹','Bandaids'],
+    ['🗺️','Study the map of the location'],
     ['📚','Read up on where you\'re going!'],
+    ['👀','Be aware of your surroundings — know who\'s nearby'],
+    ['🤝','Buddy system — check in every few minutes'],
+    ['🆘','Know the meeting spot if you get separated'],
+    ['🚫','Don\'t talk to strangers who approach you alone'],
+    ['📞','Memorize at least one parent\'s number'],
   ]},
-  // Middle school (11–13)
+  // Middle school (11–13) — tech OK now, still add awareness
   11: { label:'🎒 6th Grade Extras', items:[
-    ['📒','Notebook for notes'],['🖊️','Pens'],['📸','Camera/phone'],
-    ['🔋','Portable charger'],['🎧','Headphones for audio guides'],
-    ['🧴','Sunscreen & lip balm'],['💳','Know if you need spending money'],
-    ['📍','Screenshot the meeting spot just in case'],
+    ['📒','Notebook for notes'],['🖊️','Pens'],
+    ['📱','Phone (charged)'],['🔋','Portable charger'],
+    ['🧴','Sunscreen & lip balm'],['💳','Spending money'],
+    ['📍','Screenshot the meeting spot — know where to go if separated'],
+    ['👀','Stay aware: crowded places can be overwhelming — stick with friends'],
+    ['🚫','Don\'t share your location with people you don\'t know'],
   ]},
   12: { label:'🎮 7th Grade Extras', items:[
-    ['📒','Notebook'],['🖊️','Pens'],['📸','Phone for photos'],
-    ['🔋','Portable charger'],['🎧','Headphones'],
+    ['📒','Notebook'],['🖊️','Pens'],
+    ['📱','Phone for photos & emergencies'],['🔋','Portable charger'],
     ['💳','Spending money for gift shop'],['🧴','Sunscreen'],
-    ['📍','Save the trip location in your phone'],['👟','Comfy shoes — you\'ll walk a lot!'],
+    ['👟','Comfy shoes — you\'ll walk a lot!'],
+    ['📍','Save the trip address in your phone'],
+    ['👀','Crowd awareness — keep your group together'],
+    ['🚫','Don\'t wander off alone in unfamiliar places'],
   ]},
   13: { label:'🎮 8th Grade Extras', items:[
-    ['📒','Notebook'],['🖊️','Pens'],['📱','Phone (fully charged)'],
-    ['🔋','Portable charger'],['🎧','Headphones'],
+    ['📒','Notebook'],['🖊️','Pens'],
+    ['📱','Phone (fully charged)'],['🔋','Portable charger'],
     ['💳','Spending money'],['🧴','Sunscreen + deodorant'],
-    ['📍','Know the schedule & meeting points'],['🗺️','Download offline maps'],
+    ['📍','Know the schedule & meeting points'],
+    ['👀','Be aware of your surroundings at all times'],
+    ['🚫','Trust your gut — if something feels wrong, tell an adult'],
   ]},
   // High school (14–17)
   14: { label:'🏈 9th Grade Extras', items:[
@@ -1312,6 +1375,7 @@ const FT_AGE_ITEMS = {
     ['🧴','Sunscreen'],['💊','Any prescription meds'],
     ['🎧','Earbuds'],['🗺️','Know the schedule ahead of time'],
     ['📸','Document it for your portfolio!'],
+    ['👀','Stay aware in crowds and public spaces'],
   ]},
   15: { label:'🏈 10th Grade Extras', items:[
     ['📱','Fully charged phone'],['🔋','Portable charger'],
@@ -1356,8 +1420,7 @@ const FT_AGE_ITEMS = {
 // ── Field Trip Packing ──
 const FT_ALWAYS = [
   ['🎒','Backpack'],['💧','Full water bottle'],['🍎','Snack or lunch'],
-  ['📱','Charged phone/device'],['💊','Any medicine you need'],
-  ['💰','A little money'],['📝','Permission slip'],['🪪','School ID'],
+  ['💊','Any medicine you need'],['📝','Permission slip'],['🪪','School ID'],
 ];
 const FT_WEATHER = {
   sunny:        [['🧴','Sunscreen'],['🕶️','Sunglasses'],['🧢','Hat or cap'],['👕','Light breathable clothes']],
