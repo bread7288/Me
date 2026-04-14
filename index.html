@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
+  <!-- Leaflet map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -24,11 +26,15 @@
       <p class="header-sub" id="header-sub">Let's check the weather!</p>
     </header>
 
+    <!-- FAVORITES -->
+    <div class="favs-bar" id="favs-bar"></div>
+
     <!-- SEARCH -->
     <div class="search-box">
       <input id="city-input" type="text" placeholder="Type a city... 🏙️" autocomplete="off" />
       <button id="search-btn">🔍 Search!</button>
       <button id="locate-btn">📍 Find Me!</button>
+      <button id="fav-btn" class="fav-add-btn" title="Save this city">⭐</button>
     </div>
 
     <!-- UNIT + REFRESH -->
@@ -94,6 +100,11 @@
             <div class="stat-lbl">Sun Power</div>
           </div>
           <div class="stat-bubble">
+            <div class="stat-icon" id="moon-icon">🌕</div>
+            <div class="stat-val" id="moon-phase"></div>
+            <div class="stat-lbl">Moon</div>
+          </div>
+          <div class="stat-bubble">
             <div class="stat-icon">🌅</div>
             <div class="stat-val" id="sunrise"></div>
             <div class="stat-lbl">Sunrise</div>
@@ -104,6 +115,19 @@
             <div class="stat-lbl">Sunset</div>
           </div>
         </div>
+      </div>
+
+      <!-- PLAY OUTSIDE METER -->
+      <div class="play-card" id="play-card">
+        <div class="play-title">🏃 Should I Play Outside?</div>
+        <div class="play-answer" id="play-answer"></div>
+        <div class="play-bar-wrap">
+          <div class="play-bar" id="play-bar"></div>
+          <div class="play-labels">
+            <span>Nope 🏠</span><span>Maybe 🤔</span><span>YES! 🎉</span>
+          </div>
+        </div>
+        <div class="play-reason" id="play-reason"></div>
       </div>
 
       <!-- FUN FACT -->
@@ -118,9 +142,33 @@
         <div class="hourly-row" id="hourly-row"></div>
       </div>
 
+      <!-- TEMP CHART -->
+      <div class="section-head">📈 Temperature This Week</div>
+      <div class="chart-card">
+        <svg id="temp-chart" class="temp-chart" viewBox="0 0 620 160" preserveAspectRatio="none"></svg>
+        <div class="chart-days" id="chart-days"></div>
+      </div>
+
       <!-- 7-DAY -->
       <div class="section-head">📅 This Week</div>
       <div class="week-grid" id="week-grid"></div>
+
+      <!-- WEATHER MAP -->
+      <div class="section-head">🗺️ Weather Map</div>
+      <div class="map-section">
+        <div class="map-controls">
+          <button class="map-btn active" id="radar-btn">🌧️ Rain Radar: ON</button>
+          <button class="map-btn" id="recenter-btn">📍 My City</button>
+          <div class="map-legend">
+            <span class="legend-item"><span class="dot" style="background:#00f"></span>Light</span>
+            <span class="legend-item"><span class="dot" style="background:#0f0"></span>Moderate</span>
+            <span class="legend-item"><span class="dot" style="background:#ff0"></span>Heavy</span>
+            <span class="legend-item"><span class="dot" style="background:#f00"></span>Intense</span>
+          </div>
+        </div>
+        <div id="weather-map"></div>
+        <div class="map-tip">👆 Tap anywhere on the map to check the weather there!</div>
+      </div>
 
       <!-- TIP -->
       <div class="tip-box" id="tip-box"></div>
@@ -128,6 +176,7 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
