@@ -7,8 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
-  <!-- Leaflet map -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -150,17 +148,14 @@
       <div class="section-head">🗺️ Weather Map</div>
       <div class="map-section">
         <div class="map-controls">
-          <button class="map-btn active" id="radar-btn">🌧️ Rain Radar: ON</button>
-          <button class="map-btn" id="recenter-btn">📍 My City</button>
-          <div class="map-legend">
-            <span class="legend-item"><span class="dot" style="background:#00f"></span>Light</span>
-            <span class="legend-item"><span class="dot" style="background:#0f0"></span>Moderate</span>
-            <span class="legend-item"><span class="dot" style="background:#ff0"></span>Heavy</span>
-            <span class="legend-item"><span class="dot" style="background:#f00"></span>Intense</span>
-          </div>
+          <button class="map-btn active" data-layer="rain">🌧️ Rain</button>
+          <button class="map-btn" data-layer="wind">💨 Wind</button>
+          <button class="map-btn" data-layer="temp">🌡️ Temp</button>
+          <button class="map-btn" data-layer="clouds">☁️ Clouds</button>
+          <button class="map-btn" data-layer="snowcover">❄️ Snow</button>
         </div>
-        <div id="weather-map"></div>
-        <div class="map-tip">👆 Tap anywhere on the map to check the weather there!</div>
+        <iframe id="windy-map" allowfullscreen></iframe>
+        <div class="map-tip">🌍 Powered by Windy — real forecast data • Click anywhere for a full forecast!</div>
       </div>
 
       <!-- TIP -->
@@ -169,7 +164,6 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

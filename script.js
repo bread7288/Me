@@ -134,7 +134,6 @@ function fmt(val)          { return Math.round(useCelsius ? val : toF(val)) + (u
 let useCelsius = false, currentData = null, currentCity = '', currentCountry = '';
 let currentLat = null, currentLon = null;
 let refreshTimer = null, countdown = 600;
-let weatherMap = null, mapMarker = null, radarLayer = null, radarOn = true;
 
 // ── Favorites (localStorage) ──
 function getFavs() { try { return JSON.parse(localStorage.getItem('wes_favs') || '[]'); } catch { return []; } }
@@ -182,9 +181,6 @@ const bgLayer     = document.getElementById('bg-layer');
 const particlesEl = document.getElementById('particles');
 const unitToggle  = document.getElementById('unit-toggle');
 const refreshInfo = document.getElementById('refresh-info');
-const radarBtn    = document.getElementById('radar-btn');
-const recenterBtn = document.getElementById('recenter-btn');
-
 // Unit toggle
 unitToggle.addEventListener('click', () => {
   useCelsius = !useCelsius;
@@ -202,19 +198,6 @@ locateBtn.addEventListener('click', () => {
     pos => fetchWeather(pos.coords.latitude, pos.coords.longitude, 'My Location', ''),
     ()  => showError('Location access denied 😢')
   );
-});
-
-// ── Radar toggle ──
-radarBtn.addEventListener('click', () => {
-  radarOn = !radarOn;
-  radarBtn.textContent = radarOn ? '🌧️ Rain Radar: ON' : '🌧️ Rain Radar: OFF';
-  radarBtn.classList.toggle('active', radarOn);
-  if (radarOn) loadRadar();
-  else if (radarLayer) { weatherMap.removeLayer(radarLayer); radarLayer = null; }
-});
-
-recenterBtn.addEventListener('click', () => {
-  if (weatherMap && currentLat) weatherMap.setView([currentLat, currentLon], 8);
 });
 
 // ── Geocode ──
@@ -365,8 +348,8 @@ function renderWeather(d, city, country) {
 
   show('weather');
 
-  // Init map after weather shown (needs DOM visible)
-  requestAnimationFrame(() => initMap(currentLat, currentLon));
+  // Update Windy map to new location
+  initWindyMap(currentLat, currentLon);
 }
 
 // ── SVG Temp Chart ──
@@ -419,73 +402,28 @@ function renderTempChart(d) {
   }).join('');
 }
 
-// ── Map ──
-async function initMap(lat, lon) {
-  if (!weatherMap) {
-    weatherMap = L.map('weather-map', { zoomControl: true, attributionControl: true })
-      .setView([lat, lon], 7);
+// ── Windy Map ──
+let windyLayer = 'rain';
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 18,
-    }).addTo(weatherMap);
+function buildWindyUrl(lat, lon, layer) {
+  const unit = useCelsius ? '%C2%B0C' : '%C2%B0F';
+  return `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=6&level=surface&overlay=${layer}&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=${unit}&radarRange=-1`;
+}
 
-    weatherMap.on('click', async e => {
-      const { lat: clat, lng: clon } = e.latlng;
-      const popup = L.popup().setLatLng([clat, clon])
-        .setContent('<div class="map-popup">⏳ Loading...</div>')
-        .openOn(weatherMap);
-      try {
-        const [geo, wx] = await Promise.all([
-          reverseGeocode(clat, clon),
-          fetch(`https://api.open-meteo.com/v1/forecast?latitude=${clat}&longitude=${clon}&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=auto`).then(r=>r.json()),
-        ]);
-        const [, icon] = wmo(wx.current.weather_code);
-        const [desc]   = wmo(wx.current.weather_code);
-        const t = fmt(wx.current.temperature_2m);
-        popup.setContent(`
-          <div class="map-popup">
-            <span class="pop-icon">${icon}</span>
-            <div class="pop-city">${geo.city}</div>
-            <div>${desc}</div>
-            <div class="pop-temp">${t}</div>
-          </div>
-        `);
-      } catch { popup.setContent('<div class="map-popup">❌ Could not load weather</div>'); }
-    });
+function initWindyMap(lat, lon) {
+  const iframe = document.getElementById('windy-map');
+  iframe.src = buildWindyUrl(lat, lon, windyLayer);
+}
 
-    if (radarOn) loadRadar();
-  } else {
-    weatherMap.setView([lat, lon], 7);
-  }
-
-  // Update marker
-  if (mapMarker) weatherMap.removeLayer(mapMarker);
-  const [, icon] = wmo(currentData?.current?.weather_code ?? 0);
-  const divIcon = L.divIcon({
-    html: `<div class="map-emoji">${icon}</div>`,
-    className: '',
-    iconSize: [48, 48],
-    iconAnchor: [24, 24],
+// Layer buttons
+document.querySelectorAll('.map-btn[data-layer]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.map-btn[data-layer]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    windyLayer = btn.dataset.layer;
+    if (currentLat) initWindyMap(currentLat, currentLon);
   });
-  mapMarker = L.marker([lat, lon], { icon: divIcon }).addTo(weatherMap);
-  mapMarker.bindPopup(`<div class="map-popup"><b class="pop-city">${currentCity}</b><br><span class="pop-temp">${document.getElementById('now-temp').textContent}</span></div>`);
-}
-
-async function loadRadar() {
-  if (!weatherMap) return;
-  if (radarLayer) { weatherMap.removeLayer(radarLayer); radarLayer = null; }
-  try {
-    const data  = await fetch('https://api.rainviewer.com/public/weather-maps.json').then(r => r.json());
-    const frames = data.radar.past;
-    if (!frames.length) return;
-    const frame = frames[frames.length - 1];
-    radarLayer = L.tileLayer(
-      `https://tilecache.rainviewer.com${frame.path}/256/{z}/{x}/{y}/2/1_1.png`,
-      { opacity: 0.55, zIndex: 10, attribution: 'RainViewer' }
-    ).addTo(weatherMap);
-  } catch { console.warn('Radar unavailable'); }
-}
+});
 
 // ── Background & particles ──
 const ALL_THEMES = ['sunny','clear-night','cloudy','rainy','snowy','stormy','foggy'];
