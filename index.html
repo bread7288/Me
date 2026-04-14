@@ -3,88 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wesley's World</title>
+  <title>Weather Now</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="app">
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero-content">
-      <div class="avatar">W</div>
-      <h1>Hi, I'm Wesley! <span class="wave">👋</span></h1>
-      <p class="tagline">2nd Grader &bull; Pennsylvania &bull; Creator &bull; Gamer</p>
-      <a href="#works" class="btn">See My Works</a>
+    <div class="search-bar">
+      <input id="city-input" type="text" placeholder="Search city..." autocomplete="off" />
+      <button id="search-btn">Search</button>
+      <button id="locate-btn" title="Use my location">&#9678;</button>
     </div>
-    <div class="stars" aria-hidden="true"></div>
-  </header>
 
-  <!-- ABOUT -->
-  <section class="section" id="about">
-    <h2>About Me</h2>
-    <div class="card about-card">
-      <p>
-        Hey there! I'm <strong>Wesley</strong> and I'm in <strong>2nd grade</strong>.
-        I live in <strong>Pennsylvania</strong> 🏔️. I love building things, playing games,
-        watching cool videos, and learning to code. This is my corner of the internet!
-      </p>
+    <div id="loading" class="hidden">
+      <div class="spinner"></div>
+      <p>Fetching weather...</p>
     </div>
-  </section>
 
-  <!-- INTERESTS -->
-  <section class="section alt" id="interests">
-    <h2>Things I Love</h2>
-    <div class="grid">
-      <div class="interest-card">
-        <div class="icon">🎮</div>
-        <h3>Gaming</h3>
-        <p>I love playing video games. They're so much fun!</p>
-      </div>
-      <div class="interest-card">
-        <div class="icon">📺</div>
-        <h3>YouTube</h3>
-        <p>I watch all kinds of cool videos online.</p>
-      </div>
-      <div class="interest-card">
-        <div class="icon">💻</div>
-        <h3>Coding</h3>
-        <p>I'm learning to code — I even made this website!</p>
-      </div>
-      <div class="interest-card">
-        <div class="icon">🧱</div>
-        <h3>Lego</h3>
-        <p>Building Lego sets is one of my favorite things to do.</p>
-      </div>
+    <div id="error" class="hidden">
+      <p id="error-msg"></p>
     </div>
-  </section>
 
-  <!-- WORKS -->
-  <section class="section" id="works">
-    <h2>My Works</h2>
-    <p class="works-subtitle">I'll be adding my creations here soon. Check back later!</p>
-    <div class="grid">
-      <div class="work-placeholder">
-        <div class="placeholder-icon">🧱</div>
-        <p>Lego Builds</p>
-        <span class="coming-soon">Coming Soon</span>
+    <div id="weather" class="hidden">
+
+      <!-- CURRENT -->
+      <div class="current-card">
+        <div class="location">
+          <span id="city-name"></span>
+          <span id="country"></span>
+        </div>
+        <div class="date-time" id="datetime"></div>
+        <div class="main-info">
+          <div class="temp-block">
+            <div class="temp" id="temp"></div>
+            <div class="feels-like">Feels like <span id="feels"></span></div>
+          </div>
+          <div class="condition-block">
+            <div class="condition-icon" id="cond-icon"></div>
+            <div class="condition-text" id="cond-text"></div>
+          </div>
+        </div>
+        <div class="details-grid">
+          <div class="detail"><span class="label">Humidity</span><span id="humidity"></span></div>
+          <div class="detail"><span class="label">Wind</span><span id="wind"></span></div>
+          <div class="detail"><span class="label">Visibility</span><span id="visibility"></span></div>
+          <div class="detail"><span class="label">Pressure</span><span id="pressure"></span></div>
+          <div class="detail"><span class="label">Sunrise</span><span id="sunrise"></span></div>
+          <div class="detail"><span class="label">Sunset</span><span id="sunset"></span></div>
+        </div>
       </div>
-      <div class="work-placeholder">
-        <div class="placeholder-icon">🎨</div>
-        <p>Paintings</p>
-        <span class="coming-soon">Coming Soon</span>
+
+      <!-- HOURLY -->
+      <h3 class="section-label">Next 24 Hours</h3>
+      <div class="hourly-scroll">
+        <div class="hourly-track" id="hourly-track"></div>
       </div>
-      <div class="work-placeholder">
-        <div class="placeholder-icon">✂️</div>
-        <p>Handcrafts</p>
-        <span class="coming-soon">Coming Soon</span>
-      </div>
+
+      <!-- 7-DAY -->
+      <h3 class="section-label">7-Day Forecast</h3>
+      <div class="daily-list" id="daily-list"></div>
+
     </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>Made with ❤️ by Wesley &bull; Pennsylvania &bull; 2026</p>
-  </footer>
+  </div>
 
   <script src="script.js"></script>
 </body>
