@@ -56,6 +56,7 @@
       <div class="now-card">
         <div class="now-top">
           <div class="now-mascot" id="now-mascot"></div>
+          <div class="mascot-speech hidden" id="mascot-speech"></div>
           <div class="now-info">
             <div class="now-city">📍 <span id="city-name"></span></div>
             <div class="now-date" id="now-date"></div>
@@ -288,6 +289,155 @@
           <button id="journal-save" class="journal-save-btn">💾 Save to Journal</button>
         </div>
         <div class="journal-entries" id="journal-entries"></div>
+      </div>
+
+      <!-- STORM DISTANCE CALCULATOR -->
+      <div class="section-head">⚡ Lightning Distance Calculator</div>
+      <div class="storm-calc-card">
+        <div class="storm-instructions">⚡ See lightning? Tap the first button! 🔊 Hear thunder? Tap the second button!</div>
+        <div class="storm-btns">
+          <button class="storm-btn" id="lightning-btn">⚡ I SAW Lightning!</button>
+          <button class="storm-btn thunder-btn" id="thunder-btn" disabled>🔊 I HEARD Thunder!</button>
+        </div>
+        <div class="storm-result" id="storm-result">Waiting for a storm...</div>
+      </div>
+
+      <!-- UV BURN TIMER -->
+      <div class="section-head">☀️ Sunburn Timer</div>
+      <div class="uv-timer-card">
+        <div class="uv-skin-lbl">Pick your skin type:</div>
+        <div class="uv-skin-btns" id="uv-skin-btns">
+          <button class="skin-btn active" data-skin="1">🌸 Very Fair</button>
+          <button class="skin-btn" data-skin="2">☀️ Fair</button>
+          <button class="skin-btn" data-skin="3">🌻 Medium</button>
+          <button class="skin-btn" data-skin="4">🍂 Olive</button>
+          <button class="skin-btn" data-skin="5">🍫 Brown</button>
+          <button class="skin-btn" data-skin="6">🖤 Dark</button>
+        </div>
+        <div class="uv-burn-row">
+          <div class="uv-burn-time" id="uv-burn-time">--</div>
+          <div class="uv-burn-lbl">min without sunscreen</div>
+        </div>
+        <button class="uv-start-btn" id="uv-start-btn">⏱️ Start Timer!</button>
+        <div class="uv-countdown" id="uv-countdown"></div>
+      </div>
+
+      <!-- TEMPERATURE LAB -->
+      <div class="section-head">🧪 Temperature Lab</div>
+      <div class="temp-conv-card">
+        <div class="temp-conv-row">
+          <input type="number" id="conv-input" class="conv-input" placeholder="Type a number..." />
+          <div class="conv-from-btns">
+            <button class="conv-btn active" data-from="F">°F</button>
+            <button class="conv-btn" data-from="C">°C</button>
+            <button class="conv-btn" data-from="K">K</button>
+          </div>
+        </div>
+        <div class="conv-results" id="conv-results">
+          <div class="conv-result-item" id="conv-f"></div>
+          <div class="conv-result-item" id="conv-c"></div>
+          <div class="conv-result-item" id="conv-k"></div>
+          <div class="conv-result-item" id="conv-desc"></div>
+        </div>
+      </div>
+
+      <!-- CITY COMPARISON -->
+      <div class="section-head">🏙️ Compare Two Cities</div>
+      <div class="compare-card">
+        <div class="compare-search-row">
+          <input type="text" id="compare-input" class="compare-input" placeholder="Type a city to compare..." autocomplete="off" />
+          <button id="compare-btn" class="compare-search-btn">🔍 Compare!</button>
+        </div>
+        <div class="compare-grid" id="compare-grid"></div>
+      </div>
+
+      <!-- WEATHER BINGO -->
+      <div class="section-head">🎯 Weather Bingo!</div>
+      <div class="bingo-card">
+        <div class="bingo-grid" id="bingo-grid"></div>
+        <div class="bingo-actions">
+          <button class="bingo-reset-btn" id="bingo-reset">🔄 New Card</button>
+        </div>
+        <div class="bingo-win hidden" id="bingo-win">🎉 BINGO! You WIN! 🎉</div>
+      </div>
+
+      <!-- MOOD PICKER -->
+      <div class="section-head">😊 Weather Mood Tracker</div>
+      <div class="mood-card">
+        <div class="mood-q">How does today's weather make you feel?</div>
+        <div class="mood-emojis">
+          <button class="mood-btn" data-mood="😄 Happy">😄</button>
+          <button class="mood-btn" data-mood="😎 Cool">😎</button>
+          <button class="mood-btn" data-mood="😴 Sleepy">😴</button>
+          <button class="mood-btn" data-mood="🤩 Excited">🤩</button>
+          <button class="mood-btn" data-mood="😢 Sad">😢</button>
+          <button class="mood-btn" data-mood="😬 Nervous">😬</button>
+          <button class="mood-btn" data-mood="🥰 Cozy">🥰</button>
+          <button class="mood-btn" data-mood="🤔 Meh">🤔</button>
+          <button class="mood-btn" data-mood="⚡ Energized">⚡</button>
+          <button class="mood-btn" data-mood="🧸 Comfy">🧸</button>
+        </div>
+        <div class="mood-result" id="mood-result"></div>
+        <div class="mood-history" id="mood-history"></div>
+      </div>
+
+      <!-- MAGIC 8-BALL -->
+      <div class="section-head">🎱 Magic Weather 8-Ball</div>
+      <div class="ball-card">
+        <div class="ball" id="magic-ball">
+          <div class="ball-inner">
+            <div class="ball-8">🎱</div>
+            <div class="ball-answer" id="ball-answer">Shake me!</div>
+          </div>
+        </div>
+        <button class="ball-shake-btn" id="ball-shake">🫳 Shake the Ball!</button>
+      </div>
+
+      <!-- SLOT MACHINE -->
+      <div class="section-head">🎰 Weather Slot Machine</div>
+      <div class="slot-card">
+        <div class="slot-reels">
+          <div class="slot-reel" id="slot-r1">☀️</div>
+          <div class="slot-sep">|</div>
+          <div class="slot-reel" id="slot-r2">🌧️</div>
+          <div class="slot-sep">|</div>
+          <div class="slot-reel" id="slot-r3">❄️</div>
+        </div>
+        <button class="slot-btn" id="slot-spin">🎰 SPIN!</button>
+        <div class="slot-result" id="slot-result">Press SPIN for a fun weather combo!</div>
+      </div>
+
+      <!-- PRECIPITATION SLIDER -->
+      <div class="section-head">🌡️ Rain vs Snow Lab</div>
+      <div class="precip-card">
+        <div class="precip-q">Drag the slider to see what kind of precipitation falls!</div>
+        <input type="range" id="precip-slider" class="precip-slider" min="-20" max="15" value="5" />
+        <div class="precip-display">
+          <div class="precip-type" id="precip-type">🌧️ Rain</div>
+          <div class="precip-temp-lbl" id="precip-temp">5°C / 41°F</div>
+        </div>
+        <div class="precip-info" id="precip-info">At this temperature, you'd expect rain.</div>
+      </div>
+
+      <!-- SOUND MIXER -->
+      <div class="section-head">🎵 Weather Sound Mixer</div>
+      <div class="mixer-card">
+        <div class="mixer-row">
+          <span class="mixer-lbl">🌧️ Rain</span>
+          <input type="range" class="mixer-slider" id="mix-rain" min="0" max="100" value="0" />
+        </div>
+        <div class="mixer-row">
+          <span class="mixer-lbl">💨 Wind</span>
+          <input type="range" class="mixer-slider" id="mix-wind" min="0" max="100" value="0" />
+        </div>
+        <div class="mixer-row">
+          <span class="mixer-lbl">⛈️ Thunder</span>
+          <input type="range" class="mixer-slider" id="mix-thunder" min="0" max="100" value="0" />
+        </div>
+        <div class="mixer-row">
+          <span class="mixer-lbl">🐦 Birds</span>
+          <input type="range" class="mixer-slider" id="mix-birds" min="0" max="100" value="0" />
+        </div>
       </div>
 
       <!-- TIP -->
