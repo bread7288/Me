@@ -28,9 +28,10 @@
       <button id="fav-btn" class="fav-add-btn" title="Save this city">⭐</button>
     </div>
 
-    <!-- UNIT + REFRESH -->
+    <!-- TOOLBAR -->
     <div class="toolbar">
       <button id="unit-toggle" class="pill-btn">🌡️ Switch to °C</button>
+      <button id="sound-btn" class="pill-btn">🔇 Sounds: OFF</button>
       <span class="refresh-info" id="refresh-info"></span>
     </div>
 
@@ -47,6 +48,9 @@
 
     <!-- WEATHER -->
     <div id="weather" class="hidden">
+
+      <!-- ALERTS BANNER -->
+      <div id="alerts-banner" class="hidden"></div>
 
       <!-- NOW CARD -->
       <div class="now-card">
@@ -78,7 +82,7 @@
           <div class="stat-bubble">
             <div class="stat-icon">💧</div>
             <div class="stat-val" id="humidity"></div>
-            <div class="stat-lbl">Humid</div>
+            <div class="stat-lbl">Humidity</div>
           </div>
           <div class="stat-bubble">
             <div class="stat-icon">💨</div>
@@ -89,6 +93,11 @@
             <div class="stat-icon">☀️</div>
             <div class="stat-val" id="uv"></div>
             <div class="stat-lbl">Sun Power</div>
+          </div>
+          <div class="stat-bubble">
+            <div class="stat-icon">🔽</div>
+            <div class="stat-val" id="pressure-val"></div>
+            <div class="stat-lbl" id="pressure-trend">Pressure</div>
           </div>
           <div class="stat-bubble">
             <div class="stat-icon" id="moon-icon">🌕</div>
@@ -104,6 +113,40 @@
             <div class="stat-icon">🌇</div>
             <div class="stat-val" id="sunset"></div>
             <div class="stat-lbl">Sunset</div>
+          </div>
+          <div class="stat-bubble">
+            <div class="stat-icon">👁️</div>
+            <div class="stat-val" id="visibility"></div>
+            <div class="stat-lbl">Can See</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AIR QUALITY -->
+      <div class="section-head">🏭 Air Quality</div>
+      <div class="aqi-card" id="aqi-card">
+        <div class="aqi-main">
+          <div class="aqi-score" id="aqi-score">--</div>
+          <div class="aqi-label-wrap">
+            <div class="aqi-label" id="aqi-label">Loading...</div>
+            <div class="aqi-sub" id="aqi-sub"></div>
+          </div>
+        </div>
+        <div class="aqi-stats">
+          <div class="aqi-stat"><span class="aqi-s-lbl">PM2.5</span><span id="aqi-pm25">--</span></div>
+          <div class="aqi-stat"><span class="aqi-s-lbl">PM10</span><span id="aqi-pm10">--</span></div>
+          <div class="aqi-stat"><span class="aqi-s-lbl">NO₂</span><span id="aqi-no2">--</span></div>
+          <div class="aqi-stat"><span class="aqi-s-lbl">Ozone</span><span id="aqi-ozone">--</span></div>
+        </div>
+        <div class="aqi-bar-wrap">
+          <div class="aqi-bar-track">
+            <div class="aqi-bar-fill" id="aqi-bar"></div>
+          </div>
+          <div class="aqi-scale">
+            <span style="color:#00e400">Good</span>
+            <span style="color:#ffff00">OK</span>
+            <span style="color:#ff7e00">Bad</span>
+            <span style="color:#ff0000">Very Bad</span>
           </div>
         </div>
       </div>
@@ -147,15 +190,55 @@
       <!-- WEATHER MAP -->
       <div class="section-head">🗺️ Weather Map</div>
       <div class="map-section">
+        <div class="map-group-label">🌤️ Weather Layers</div>
         <div class="map-controls">
           <button class="map-btn active" data-layer="rain">🌧️ Rain</button>
           <button class="map-btn" data-layer="wind">💨 Wind</button>
           <button class="map-btn" data-layer="temp">🌡️ Temp</button>
           <button class="map-btn" data-layer="clouds">☁️ Clouds</button>
           <button class="map-btn" data-layer="snowcover">❄️ Snow</button>
+          <button class="map-btn" data-layer="rh">💧 Humidity</button>
+          <button class="map-btn" data-layer="uvindex">🔆 UV</button>
+          <button class="map-btn" data-layer="cape">⛈️ Storms</button>
+          <button class="map-btn" data-layer="waves">🌊 Waves</button>
+        </div>
+        <div class="map-group-label">🏭 Pollution Layers</div>
+        <div class="map-controls">
+          <button class="map-btn" data-layer="pm2p5">🔴 PM2.5</button>
+          <button class="map-btn" data-layer="aqi">😷 AQI</button>
+          <button class="map-btn" data-layer="no2">🟠 NO₂</button>
+          <button class="map-btn" data-layer="so2">🟡 SO₂</button>
+          <button class="map-btn" data-layer="cosc">⚫ CO</button>
+          <button class="map-btn" data-layer="dust">🟤 Dust</button>
         </div>
         <iframe id="windy-map" allowfullscreen></iframe>
-        <div class="map-tip">🌍 Powered by Windy — real forecast data • Click anywhere for a full forecast!</div>
+        <div class="map-tip">🌍 Powered by Windy — real ECMWF forecast + Copernicus pollution data • Tap anywhere for a local forecast!</div>
+      </div>
+
+      <!-- WEATHER QUIZ -->
+      <div class="section-head">🧠 Weather Quiz!</div>
+      <div class="quiz-card" id="quiz-card">
+        <div class="quiz-score-row">
+          <span class="quiz-score-lbl">Score: <b id="quiz-score">0</b> / <b id="quiz-total">0</b></span>
+          <button class="quiz-next-btn" id="quiz-next">Next Question ➡️</button>
+        </div>
+        <div class="quiz-q" id="quiz-q">Press "Next Question" to start!</div>
+        <div class="quiz-choices" id="quiz-choices"></div>
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+      </div>
+
+      <!-- WEATHER JOURNAL -->
+      <div class="section-head">📓 My Weather Journal</div>
+      <div class="journal-card">
+        <div class="journal-new">
+          <div class="journal-header-row">
+            <span class="journal-date" id="journal-date"></span>
+            <span class="journal-weather-tag" id="journal-tag"></span>
+          </div>
+          <textarea id="journal-text" placeholder="How does today's weather make you feel? What did you do outside? Write it here! ✏️" rows="3"></textarea>
+          <button id="journal-save" class="journal-save-btn">💾 Save to Journal</button>
+        </div>
+        <div class="journal-entries" id="journal-entries"></div>
       </div>
 
       <!-- TIP -->
