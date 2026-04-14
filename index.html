@@ -3,126 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wes's Weather World 🌈</title>
+  <title>Wes's Weather! 🌈</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Animated background -->
   <div class="bg-layer" id="bg-layer">
     <div class="particles" id="particles"></div>
   </div>
 
   <div class="app">
 
-    <!-- TITLE -->
-    <div class="site-title">
-      <span class="title-icon" id="title-icon">🌤️</span>
-      <h1>Wes's Weather World!</h1>
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-mascot" id="header-mascot">⛅</div>
+      <h1 class="header-title">Wes's Weather!</h1>
+      <p class="header-sub" id="header-sub">Let's check the weather!</p>
+    </header>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+      <input id="city-input" type="text" placeholder="Type a city... 🏙️" autocomplete="off" />
+      <button id="search-btn">🔍 Search!</button>
+      <button id="locate-btn">📍 Find Me!</button>
     </div>
 
-    <!-- SEARCH + CONTROLS -->
-    <div class="top-bar">
-      <div class="search-bar">
-        <input id="city-input" type="text" placeholder="🔍 Type a city name..." autocomplete="off" />
-        <button id="search-btn">Go!</button>
-        <button id="locate-btn" title="Find my location">📍</button>
-      </div>
-      <div class="controls">
-        <button id="unit-toggle" class="unit-btn">Switch to °C</button>
-        <div class="refresh-info" id="refresh-info"></div>
-      </div>
+    <!-- UNIT + REFRESH -->
+    <div class="toolbar">
+      <button id="unit-toggle" class="pill-btn">🌡️ Switch to °C</button>
+      <span class="refresh-info" id="refresh-info"></span>
     </div>
 
+    <!-- LOADING -->
     <div id="loading" class="hidden">
-      <div class="spinner"></div>
-      <p>Looking up the weather... ☁️</p>
+      <div class="cloud-loader">☁️</div>
+      <p>Looking outside...</p>
     </div>
 
+    <!-- ERROR -->
     <div id="error" class="hidden">
       <p id="error-msg"></p>
     </div>
 
+    <!-- WEATHER -->
     <div id="weather" class="hidden">
 
-      <!-- CURRENT -->
-      <div class="current-card">
-        <div class="mascot-row">
-          <div class="mascot" id="mascot"></div>
-          <div class="location-block">
-            <div class="location">📍 <span id="city-name"></span><span id="country"></span></div>
-            <div class="date-time" id="datetime"></div>
+      <!-- NOW CARD -->
+      <div class="now-card">
+        <div class="now-top">
+          <div class="now-mascot" id="now-mascot"></div>
+          <div class="now-info">
+            <div class="now-city">📍 <span id="city-name"></span></div>
+            <div class="now-date" id="now-date"></div>
+            <div class="now-cond" id="now-cond"></div>
           </div>
         </div>
 
-        <div class="temp-row">
-          <div class="temp" id="temp"></div>
-          <div class="cond-block">
-            <div class="condition-text" id="cond-text"></div>
-            <div class="feels-like">Feels like <span id="feels"></span></div>
+        <div class="now-temp-block">
+          <div class="now-temp" id="now-temp"></div>
+          <div class="temp-feel-wrap">
+            <div class="temp-word" id="temp-word"></div>
+            <div class="now-feels">Feels like <span id="now-feels"></span></div>
           </div>
         </div>
 
-        <div class="details-grid">
-          <div class="detail">
-            <span class="d-icon">💧</span>
-            <span class="label">Humidity</span>
-            <span id="humidity"></span>
+        <!-- WEAR TODAY -->
+        <div class="wear-card">
+          <div class="wear-title">👕 What to Wear Today</div>
+          <div class="wear-items" id="wear-items"></div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-row">
+          <div class="stat-bubble">
+            <div class="stat-icon">💧</div>
+            <div class="stat-val" id="humidity"></div>
+            <div class="stat-lbl">Humid</div>
           </div>
-          <div class="detail">
-            <span class="d-icon">💨</span>
-            <span class="label">Wind Speed</span>
-            <span id="wind"></span>
+          <div class="stat-bubble">
+            <div class="stat-icon">💨</div>
+            <div class="stat-val" id="wind"></div>
+            <div class="stat-lbl">Wind</div>
           </div>
-          <div class="detail">
-            <span class="d-icon">🧭</span>
-            <span class="label">Wind Points</span>
-            <span id="wind-dir"></span>
+          <div class="stat-bubble">
+            <div class="stat-icon">☀️</div>
+            <div class="stat-val" id="uv"></div>
+            <div class="stat-lbl">Sun Power</div>
           </div>
-          <div class="detail">
-            <span class="d-icon">👁️</span>
-            <span class="label">Can See</span>
-            <span id="visibility"></span>
+          <div class="stat-bubble">
+            <div class="stat-icon">🌅</div>
+            <div class="stat-val" id="sunrise"></div>
+            <div class="stat-lbl">Sunrise</div>
           </div>
-          <div class="detail">
-            <span class="d-icon">☀️</span>
-            <span class="label">Sun Power</span>
-            <span id="uv"></span>
-          </div>
-          <div class="detail">
-            <span class="d-icon">🌅</span>
-            <span class="label">Sunrise</span>
-            <span id="sunrise"></span>
-          </div>
-          <div class="detail">
-            <span class="d-icon">🌇</span>
-            <span class="label">Sunset</span>
-            <span id="sunset"></span>
+          <div class="stat-bubble">
+            <div class="stat-icon">🌇</div>
+            <div class="stat-val" id="sunset"></div>
+            <div class="stat-lbl">Sunset</div>
           </div>
         </div>
       </div>
 
       <!-- FUN FACT -->
-      <div class="funfact-card" id="funfact-card">
-        <span class="funfact-label">🌟 Did You Know?</span>
-        <p id="funfact-text"></p>
+      <div class="fact-card">
+        <div class="fact-top">🌟 Cool Weather Fact!</div>
+        <div class="fact-text" id="fact-text"></div>
       </div>
 
       <!-- HOURLY -->
-      <h3 class="section-label">⏰ Next 24 Hours</h3>
-      <div class="hourly-scroll">
-        <div class="hourly-track" id="hourly-track"></div>
+      <div class="section-head">⏰ Next 24 Hours</div>
+      <div class="hourly-wrap">
+        <div class="hourly-row" id="hourly-row"></div>
       </div>
 
       <!-- 7-DAY -->
-      <h3 class="section-label">📅 This Week</h3>
-      <div class="daily-list" id="daily-list"></div>
+      <div class="section-head">📅 This Week</div>
+      <div class="week-grid" id="week-grid"></div>
 
       <!-- TIP -->
-      <div class="tip-card" id="tip-card"></div>
+      <div class="tip-box" id="tip-box"></div>
 
     </div>
   </div>
