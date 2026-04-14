@@ -62,18 +62,107 @@ const TIPS = {
 
 // ── Quiz questions ──
 const QUIZ_QS = [
+  // Thunder & Lightning
   { q:"What makes thunder?", choices:["Clouds bumping together","Cold and warm air mixing","Lightning heating air super fast","Wind blowing really hard"], ans:2 },
-  { q:"How fast do raindrops fall?", choices:["2 miles per hour","14 miles per hour","50 miles per hour","100 miles per hour"], ans:1 },
-  { q:"No two of these are exactly alike — ever!", choices:["Raindrops","Snowflakes","Clouds","Rainbows"], ans:1 },
   { q:"A lightning bolt is hotter than...", choices:["A campfire","Boiling water","The surface of the Sun","A pizza oven"], ans:2 },
-  { q:"What is fog made of?", choices:["Smoke","Tiny water droplets touching the ground","Ice crystals in space","Invisible air"], ans:1 },
-  { q:"How many Earths fit inside the Sun?", choices:["100","10,000","1 million","1 billion"], ans:2 },
-  { q:"What shape is a rainbow really?", choices:["A half circle","A full circle","A straight line","A spiral"], ans:1 },
-  { q:"What is hail made of?", choices:["Hard snow","Frozen rain balls","Dried mud","Tiny rocks"], ans:1 },
-  { q:"Which is the most accurate weather forecast model?", choices:["A magic 8-ball","GFS","ECMWF","Looking at clouds yourself"], ans:2 },
   { q:"How far away is lightning if you count 5 seconds after the flash?", choices:["1 mile","5 miles","10 miles","Half a mile"], ans:0 },
-  { q:"What causes wind?", choices:["The Earth spinning super fast","Differences in air pressure","The moon pulling air","Trees breathing"], ans:1 },
+  { q:"How many times does lightning strike Earth every second?", choices:["1 time","10 times","100 times","1,000 times"], ans:2 },
+  { q:"What should you do if you're outside during lightning?", choices:["Stand under a tall tree","Hold your umbrella up high","Crouch low and stay away from trees","Run as fast as you can"], ans:2 },
+  { q:"Can lightning strike the same place twice?", choices:["Never","Yes, it happens all the time!","Only in movies","Only if it's raining"], ans:1 },
+
+  // Rain & Water
+  { q:"How fast do raindrops fall?", choices:["2 miles per hour","14 miles per hour","50 miles per hour","100 miles per hour"], ans:1 },
+  { q:"What shape is a raindrop actually?", choices:["A perfect teardrop","A sphere (round ball)","A flat pancake","A tiny star"], ans:1 },
+  { q:"Where does rain come from?", choices:["Giant water tanks in the sky","Water that evaporated from oceans and lakes","Clouds making water from nothing","Airplanes spraying water"], ans:1 },
+  { q:"What is acid rain caused by?", choices:["Too many clouds","Air pollution mixing with rainwater","Rain falling through fire","Salty ocean water"], ans:1 },
+  { q:"What is a flood?", choices:["A very big puddle","When water covers areas that are usually dry","A type of storm cloud","Very heavy snow"], ans:1 },
+  { q:"What country gets the most rainfall on Earth?", choices:["Brazil","India","Colombia","United States"], ans:2 },
+  { q:"What is the driest place on Earth?", choices:["The Sahara Desert","Antarctica","Death Valley","The Gobi Desert"], ans:1 },
+  { q:"How much of Earth's water is fresh (not salty)?", choices:["50%","25%","3%","75%"], ans:2 },
+
+  // Snow & Ice
+  { q:"No two of these are exactly alike — ever!", choices:["Raindrops","Snowflakes","Clouds","Rainbows"], ans:1 },
   { q:"What is the biggest snowflake ever recorded as wide as?", choices:["A coin","Your hand","A pizza","A car"], ans:2 },
+  { q:"Snow is actually what color?", choices:["White","Clear / transparent","Light blue","Grey"], ans:1 },
+  { q:"What is a blizzard?", choices:["A very cold day","A heavy snowstorm with strong winds","A hailstorm","Freezing rain"], ans:1 },
+  { q:"At what temperature does water freeze?", choices:["0°C / 32°F","10°C / 50°F","-10°C / 14°F","5°C / 41°F"], ans:0 },
+  { q:"What is an avalanche?", choices:["A huge wave in the ocean","A giant snowball rolling down a mountain","A rapid flow of snow down a slope","A type of blizzard"], ans:2 },
+  { q:"What is freezing rain?", choices:["Snow that melts quickly","Rain that freezes when it hits cold surfaces","Hail","Sleet mixed with snow"], ans:1 },
+  { q:"What is sleet?", choices:["Frozen rain that forms tiny ice pellets","Snow mixed with mud","Very cold fog","Wind-blown snow"], ans:0 },
+
+  // Wind
+  { q:"What causes wind?", choices:["The Earth spinning super fast","Differences in air pressure","The moon pulling air","Trees breathing"], ans:1 },
+  { q:"What is a tornado?", choices:["A spinning column of water","A rotating column of air touching the ground","A type of hurricane","Very fast straight winds"], ans:1 },
+  { q:"What is a hurricane also called in the Pacific Ocean?", choices:["Tornado","Blizzard","Typhoon","Monsoon"], ans:2 },
+  { q:"What is the eye of a hurricane?", choices:["The most dangerous part","The calm, clear center","Where lightning happens","The clouds at the top"], ans:1 },
+  { q:"What scale measures tornado strength?", choices:["Richter Scale","Beaufort Scale","Enhanced Fujita Scale","Saffir-Simpson Scale"], ans:2 },
+  { q:"What scale measures hurricane strength?", choices:["Richter Scale","Enhanced Fujita Scale","Beaufort Scale","Saffir-Simpson Scale"], ans:3 },
+  { q:"Which is stronger, an F5 tornado or a Category 5 hurricane?", choices:["F5 tornado","Category 5 hurricane","They are the same","Neither can be measured"], ans:0 },
+  { q:"What is the fastest wind speed ever recorded on Earth?", choices:["200 mph","253 mph","310 mph","400 mph"], ans:2 },
+
+  // Clouds & Atmosphere
+  { q:"What is fog made of?", choices:["Smoke","Tiny water droplets touching the ground","Ice crystals in space","Invisible air"], ans:1 },
+  { q:"A fluffy white cloud can weigh as much as...", choices:["A school bus","100 elephants","A house","A bicycle"], ans:1 },
+  { q:"What are the highest clouds called?", choices:["Cumulus","Stratus","Noctilucent","Cirrus"], ans:2 },
+  { q:"What type of cloud looks like a flat grey blanket?", choices:["Cumulus","Stratus","Cumulonimbus","Cirrus"], ans:1 },
+  { q:"What type of cloud makes thunderstorms?", choices:["Cumulus","Stratus","Cumulonimbus","Cirrostratus"], ans:2 },
+  { q:"How high up does the atmosphere reach?", choices:["10 miles","100 miles","6,000 miles","Infinity"], ans:1 },
+  { q:"What layer of atmosphere do we live in?", choices:["Stratosphere","Mesosphere","Troposphere","Thermosphere"], ans:2 },
+  { q:"What is the ozone layer?", choices:["A cloud made of dust","A layer of gas that protects us from the Sun's rays","A layer of ice around Earth","Where airplanes fly"], ans:1 },
+
+  // Sun & Temperature
+  { q:"How many Earths fit inside the Sun?", choices:["100","10,000","1 million","1 billion"], ans:2 },
+  { q:"What is the hottest temperature ever recorded on Earth?", choices:["120°F","130°F (56.7°C) in Death Valley","145°F","100°F"], ans:1 },
+  { q:"What is the coldest temperature ever recorded on Earth?", choices:["-100°F","-128.6°F (-89.2°C) in Antarctica","-200°F","-50°F"], ans:1 },
+  { q:"What causes the seasons?", choices:["Earth getting closer to the Sun","Earth's tilt as it orbits the Sun","The Moon blocking sunlight","Clouds covering the Sun"], ans:1 },
+  { q:"Which is hotter, the surface of the Sun or a lightning bolt?", choices:["The Sun's surface","A lightning bolt","They're the same temperature","Impossible to measure"], ans:1 },
+  { q:"What is a heat wave?", choices:["A wave of hot air you can see","A long period of very hot weather","Heat rising from pavement","Sunlight reflecting off water"], ans:1 },
+  { q:"What is the UV index?", choices:["How strong the wind is","How humid it is","How strong the Sun's harmful rays are","How hot it feels"], ans:2 },
+
+  // Rainbows & Light
+  { q:"What shape is a rainbow really?", choices:["A half circle","A full circle","A straight line","A spiral"], ans:1 },
+  { q:"How many colors are in a rainbow?", choices:["5","6","7","8"], ans:2 },
+  { q:"What do you need to see a rainbow?", choices:["Sun and clouds","Sun and rain at the same time","Moon and clouds","Two suns"], ans:1 },
+  { q:"What is a double rainbow?", choices:["Two rainbows side by side","A rainbow reflected in water, creating two arcs","A rainbow that appears twice a day","A rainbow with 14 colors"], ans:1 },
+  { q:"Which color is on the OUTSIDE of a rainbow?", choices:["Violet","Green","Red","Blue"], ans:2 },
+
+  // Hail & Storms
+  { q:"What is hail made of?", choices:["Hard snow","Frozen rain balls","Dried mud","Tiny rocks"], ans:1 },
+  { q:"What is the biggest hailstone ever recorded the size of?", choices:["A marble","A golf ball","A softball","A volleyball"], ans:2 },
+  { q:"Inside a thundercloud, hailstones grow by...", choices:["Getting wet over and over","Being tossed up and down adding more ice layers","Getting squished together","Freezing rain falling on them"], ans:1 },
+  { q:"What is a derecho?", choices:["A Spanish word for rain","A long, fast-moving wind storm in a straight line","A type of tornado","A tropical storm"], ans:1 },
+
+  // Weather Forecasting
+  { q:"Which is the most accurate weather forecast model?", choices:["A magic 8-ball","GFS","ECMWF","Looking at clouds yourself"], ans:2 },
+  { q:"What does a weather vane tell you?", choices:["How fast the wind blows","Which direction the wind comes from","How much rain fell","How cold it is"], ans:1 },
+  { q:"What does a barometer measure?", choices:["Temperature","Wind speed","Air pressure","Humidity"], ans:2 },
+  { q:"Falling air pressure usually means...", choices:["Good weather is coming","Bad weather is coming","No change in weather","It's going to snow"], ans:1 },
+  { q:"What does a hygrometer measure?", choices:["Temperature","Air pressure","Wind speed","Humidity"], ans:3 },
+  { q:"What does an anemometer measure?", choices:["Temperature","Wind speed","Humidity","Rainfall"], ans:1 },
+  { q:"What is a weather satellite used for?", choices:["Sending TV signals","Taking pictures of clouds and storms from space","Measuring ocean temperature only","Tracking airplanes"], ans:1 },
+  { q:"What is Doppler radar used for?", choices:["Tracking airplanes","Detecting precipitation and wind speed","Measuring temperature","Predicting earthquakes"], ans:1 },
+
+  // Climate & Records
+  { q:"What is climate?", choices:["Today's weather","The weather pattern of a place over many years","A type of storm","How hot the Sun is"], ans:1 },
+  { q:"What is the difference between weather and climate?", choices:["Nothing, they're the same","Weather is short-term, climate is long-term","Climate is short-term, weather is long-term","Weather only happens near oceans"], ans:1 },
+  { q:"Which continent is the windiest?", choices:["North America","Asia","Antarctica","Australia"], ans:2 },
+  { q:"What is El Niño?", choices:["A Spanish Christmas holiday","A warming of Pacific Ocean water that changes weather worldwide","A type of hurricane","The hottest day of the year"], ans:1 },
+  { q:"What is the greenhouse effect?", choices:["Growing plants in a glass building","Gases trapping the Sun's heat in Earth's atmosphere","Green clouds in the sky","Plants releasing oxygen"], ans:1 },
+  { q:"Which gas is most responsible for climate change?", choices:["Oxygen","Nitrogen","Carbon Dioxide","Argon"], ans:2 },
+  { q:"What is a monsoon?", choices:["A very strong tornado","A season of heavy rainfall","A type of blizzard","A dry desert wind"], ans:1 },
+  { q:"What percentage of Earth is covered by water?", choices:["50%","60%","71%","90%"], ans:2 },
+
+  // Fun & Random
+  { q:"What is the wettest place on Earth?", choices:["Amazon Rainforest","Mawsynram, India","Hawaii","Seattle, USA"], ans:1 },
+  { q:"Cows lying down means it's going to rain — true or false?", choices:["True, scientists proved it","False, it's just a myth","Sometimes true","Only in summer"], ans:1 },
+  { q:"What is ball lightning?", choices:["Lightning shaped like a ball that floats — a rare mysterious phenomenon","A type of firework","Lightning that bounces","A glowing cloud"], ans:0 },
+  { q:"How long is a typical thunderstorm?", choices:["5 minutes","30 minutes","2 hours","6 hours"], ans:1 },
+  { q:"What do animals do before a big storm?", choices:["Nothing different","Become restless and behave unusually","Sleep more than normal","Eat less food"], ans:1 },
+  { q:"A ring around the Moon usually means...", choices:["A full moon is coming","Rain or snow may be coming","A lunar eclipse is near","Good weather tomorrow"], ans:1 },
+  { q:"What is St. Elmo's Fire?", choices:["A forest fire caused by lightning","A glowing plasma on tall objects during thunderstorms","The Sun seen through clouds","A type of rainbow"], ans:1 },
+  { q:"Which direction do hurricanes spin in the Northern Hemisphere?", choices:["Clockwise","Counter-clockwise","They don't spin","Randomly"], ans:1 },
+  { q:"What is a waterspout?", choices:["A geyser in the ocean","A tornado over water","A giant ocean wave","A fountain of seawater"], ans:1 },
+  { q:"What color is the sky on Mars?", choices:["Blue like Earth","Green","Butterscotch / pinkish-tan","Purple"], ans:3 },
 ];
 
 // Moon helpers
