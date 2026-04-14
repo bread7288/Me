@@ -132,7 +132,27 @@ body { font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 20px 14px 
 .fact-text { font-size:1rem; font-weight:700; line-height:1.55; }
 
 /* ─── SECTION HEADS ─── */
-.section-head { font-family:'Fredoka One',cursive; font-size:1.4rem; color:white; text-shadow:0 3px 10px rgba(0,0,0,.2); margin-bottom:12px; margin-top:4px; }
+.section-head { font-family:'Fredoka One',cursive; font-size:1.4rem; color:white; text-shadow:0 3px 10px rgba(0,0,0,.2); margin-bottom:12px; margin-top:4px; cursor:pointer; user-select:none; display:flex; align-items:center; justify-content:space-between; gap:8px; transition:opacity .15s; }
+.section-head:hover { opacity:.85; }
+.section-chevron { font-size:.9rem; transition:transform .25s cubic-bezier(.34,1.56,.64,1); display:inline-block; opacity:.75; flex-shrink:0; }
+.section-head.sec-collapsed .section-chevron { transform:rotate(-90deg); }
+
+/* ─── FIELD TRIP ─── */
+.fieldtrip-card { background:rgba(255,255,255,.9); border-radius:24px; padding:22px 24px; margin-bottom:16px; box-shadow:0 8px 28px rgba(0,0,0,.12); border:3px solid white; }
+.fieldtrip-intro { font-size:.95rem; font-weight:800; color:#90a4ae; margin-bottom:16px; }
+.fieldtrip-group { margin-bottom:18px; }
+.fieldtrip-group:last-child { margin-bottom:0; }
+.fieldtrip-group-lbl { font-family:'Fredoka One',cursive; font-size:1rem; color:#333; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid #eee; }
+.fieldtrip-items { display:flex; flex-direction:column; gap:8px; }
+.fieldtrip-item { display:flex; align-items:center; gap:12px; background:#f9faff; border:2px solid #dde3ff; border-radius:14px; padding:10px 14px; cursor:pointer; transition:all .2s; }
+.fieldtrip-item:hover { border-color:#7c4dff; background:#eef2ff; }
+.fieldtrip-item.checked { background:#e8f5e9; border-color:#a5d6a7; }
+.fieldtrip-item.checked .ft-text { text-decoration:line-through; color:#90a4ae; }
+.ft-checkbox { width:24px; height:24px; border-radius:8px; border:3px solid #dde3ff; background:white; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; transition:all .2s; }
+.fieldtrip-item.checked .ft-checkbox { background:#4caf50; border-color:#4caf50; }
+.ft-icon { font-size:1.4rem; flex-shrink:0; }
+.ft-text { font-weight:800; font-size:.95rem; color:#333; }
+.fieldtrip-packed { font-family:'Fredoka One',cursive; font-size:1.6rem; text-align:center; color:#4caf50; padding:16px; background:#e8f5e9; border-radius:18px; margin-top:16px; animation:popIn .4s cubic-bezier(.34,1.56,.64,1); }
 
 /* ─── HOURLY ─── */
 .hourly-wrap { overflow-x:auto; margin-bottom:22px; padding-bottom:8px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.3) transparent; }

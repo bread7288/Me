@@ -527,6 +527,7 @@ function renderWeather(d, city, country, aq) {
 
   // Update interactive widgets with live data
   updateBurnTime();
+  renderFieldTrip(theme);
 
   show('weather');
 }
@@ -741,6 +742,81 @@ function show(which){
   if(which==='loading')loadingEl.classList.remove('hidden');
   if(which==='error')  errorEl.classList.remove('hidden');
   if(which==='weather')weatherEl.classList.remove('hidden');
+}
+
+// ── Collapsible Sections ──
+(function initCollapsible() {
+  const saved = JSON.parse(localStorage.getItem('wes_collapsed') || '{}');
+  document.querySelectorAll('.section-head').forEach(head => {
+    const content = head.nextElementSibling;
+    if (!content) return;
+    const chevron = document.createElement('span');
+    chevron.className = 'section-chevron';
+    chevron.textContent = '▼';
+    head.appendChild(chevron);
+    const key = head.textContent.trim().slice(0, 40);
+    if (saved[key]) {
+      content.style.display = 'none';
+      head.classList.add('sec-collapsed');
+    }
+    head.addEventListener('click', () => {
+      const isHidden = content.style.display === 'none';
+      content.style.display = isHidden ? '' : 'none';
+      head.classList.toggle('sec-collapsed', !isHidden);
+      saved[key] = !isHidden;
+      localStorage.setItem('wes_collapsed', JSON.stringify(saved));
+    });
+  });
+})();
+
+// ── Field Trip Packing ──
+const FT_ALWAYS = [
+  ['🎒','Backpack'],['💧','Full water bottle'],['🍎','Snack or lunch'],
+  ['📱','Charged phone/device'],['💊','Any medicine you need'],
+  ['💰','A little money'],['📝','Permission slip'],['🪪','School ID'],
+];
+const FT_WEATHER = {
+  sunny:        [['🧴','Sunscreen'],['🕶️','Sunglasses'],['🧢','Hat or cap'],['👕','Light breathable clothes']],
+  'clear-night':[['🔦','Flashlight'],['🧥','Warm jacket'],['🌡️','Hand warmers'],['🔭','Binoculars for stars']],
+  cloudy:       [['🧥','Light jacket'],['☔','Compact umbrella just in case'],['👟','Comfy walking shoes']],
+  rainy:        [['☔','Umbrella'],['🥾','Rain boots'],['🧥','Rain jacket'],['🧦','Extra socks'],['🛍️','Bag for wet stuff']],
+  snowy:        [['🧤','Gloves'],['🧣','Scarf'],['🥾','Snow boots'],['🧥','Heavy warm coat'],['🧦','Thick socks'],['🌡️','Hand warmers']],
+  stormy:       [['📞','Emergency contact #'],['☔','Full rain gear'],['🏠','Check if trip is still on!'],['🔦','Flashlight']],
+  foggy:        [['🧥','Jacket'],['🔦','Small flashlight'],['👟','Good grip shoes'],['🌡️','Layer up!']],
+};
+function renderFieldTrip(theme) {
+  const groups = document.getElementById('fieldtrip-groups');
+  const intro  = document.getElementById('fieldtrip-intro');
+  const packed = document.getElementById('fieldtrip-packed');
+  const weatherItems = FT_WEATHER[theme] || FT_WEATHER.cloudy;
+  const allItems = [
+    { label: '✅ Always Bring', icon: '📋', items: FT_ALWAYS },
+    { label: `${MASCOTS[theme]||'🌤️'} For Today's ${theme.charAt(0).toUpperCase()+theme.slice(1)} Weather`, icon: '🌤️', items: weatherItems },
+  ];
+  intro.textContent = 'Tap each item to check it off your list!';
+  groups.innerHTML = '';
+  let totalItems = 0, checkedItems = 0;
+  allItems.forEach(group => {
+    const div = document.createElement('div');
+    div.className = 'fieldtrip-group';
+    div.innerHTML = `<div class="fieldtrip-group-lbl">${group.label}</div><div class="fieldtrip-items"></div>`;
+    const itemsEl = div.querySelector('.fieldtrip-items');
+    group.items.forEach(([em, text]) => {
+      totalItems++;
+      const item = document.createElement('div');
+      item.className = 'fieldtrip-item';
+      item.innerHTML = `<div class="ft-checkbox"></div><div class="ft-icon">${em}</div><div class="ft-text">${text}</div>`;
+      item.addEventListener('click', () => {
+        const isChecked = item.classList.toggle('checked');
+        item.querySelector('.ft-checkbox').textContent = isChecked ? '✓' : '';
+        checkedItems += isChecked ? 1 : -1;
+        packed.classList.toggle('hidden', checkedItems < totalItems);
+      });
+      itemsEl.appendChild(item);
+    });
+    groups.appendChild(div);
+  });
+  packed.classList.add('hidden');
 }
 
 // ── Clickable Mascot ──
