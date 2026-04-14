@@ -785,8 +785,8 @@ function show(which){
   if(which==='weather')weatherEl.classList.remove('hidden');
 }
 
-// ── School Picker ──
-const ALL_SCHOOLS = [
+// ── School Picker — Live worldwide search via OpenStreetMap Nominatim ──
+const _SCHOOL_STARTERS = [
   // Pennsylvania Public Districts
   'Abington School District, PA','Agora Cyber Charter School, PA','Albert Gallatin Area SD, PA',
   'Allentown City School District, PA','Altoona Area School District, PA','Ambridge Area SD, PA',
@@ -947,12 +947,67 @@ const ALL_SCHOOLS = [
 ];
 
 let selectedSchool = localStorage.getItem('wes_school') || '';
+let _schoolTimer = null;
+let _lastSchoolQ = '';
+
+// Search OpenStreetMap Nominatim — knows every school on Earth
+async function searchSchoolsWorld(q) {
+  try {
+    const params = new URLSearchParams({
+      q, format:'json', limit:10, addressdetails:1, dedupe:1,
+      'accept-language':'en'
+    });
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
+      headers: { 'User-Agent': 'WesWeatherApp/1.0' }
+    });
+    const data = await res.json();
+    const EDU_TYPES = new Set(['school','university','college','kindergarten',
+      'academy','library','language_school','music_school','driving_school',
+      'childcare','preschool','prep_school']);
+    const EDU_WORDS = ['school','academy','elementary','middle school','high school',
+      'college','university','institute','learning','education','prep','primary',
+      'secondary','junior','senior','nursery','kindergarten','charter'];
+    return data.filter(r => {
+      const dn = (r.display_name||'').toLowerCase();
+      return EDU_TYPES.has(r.type) || EDU_TYPES.has(r.class) ||
+             EDU_WORDS.some(w => dn.includes(w));
+    }).map(r => {
+      const a = r.address || {};
+      const name = r.name || a.amenity || a.building || q;
+      const parts = [a.city||a.town||a.village||a.county||'', a.state||a.state_district||'', a.country||''].filter(Boolean);
+      return name + (parts.length ? ' — ' + parts.join(', ') : '');
+    });
+  } catch { return []; }
+}
 
 function initSchoolPicker() {
-  const input = document.getElementById('school-search');
-  const dropdown = document.getElementById('school-dropdown');
-  const selectedEl = document.getElementById('ft-school-selected');
-  const badgeEl = document.getElementById('ft-school-badge');
+  const input     = document.getElementById('school-search');
+  const dropdown  = document.getElementById('school-dropdown');
+  const selectedEl= document.getElementById('ft-school-selected');
+  const badgeEl   = document.getElementById('ft-school-badge');
+
+  function renderDropdown(results, rawQ) {
+    dropdown.innerHTML = '';
+    results.forEach(school => {
+      const div = document.createElement('div');
+      div.className = 'ft-school-opt';
+      const lo = school.toLowerCase(), lq = rawQ.toLowerCase();
+      const idx = lo.indexOf(lq);
+      if (idx >= 0) {
+        div.innerHTML = school.slice(0,idx) +
+          `<span class="ft-school-match">${school.slice(idx,idx+rawQ.length)}</span>` +
+          school.slice(idx+rawQ.length);
+      } else { div.textContent = school; }
+      div.addEventListener('click', () => showSelected(school));
+      dropdown.appendChild(div);
+    });
+    const custom = document.createElement('div');
+    custom.className = 'ft-school-opt custom-opt';
+    custom.textContent = `✏️ Use "${rawQ}"`;
+    custom.addEventListener('click', () => showSelected(rawQ));
+    dropdown.appendChild(custom);
+    dropdown.classList.remove('hidden');
+  }
 
   function showSelected(name) {
     selectedSchool = name;
@@ -976,26 +1031,38 @@ function initSchoolPicker() {
   });
 
   input.addEventListener('input', () => {
-    const q = input.value.trim().toLowerCase();
+    const rawQ = input.value.trim();
+    const q = rawQ.toLowerCase();
     dropdown.innerHTML = '';
-    if (!q) { dropdown.classList.add('hidden'); return; }
-    const matches = ALL_SCHOOLS.filter(s => s.toLowerCase().includes(q)).slice(0, 10);
-    if (matches.length) {
-      matches.forEach(school => {
-        const div = document.createElement('div');
-        div.className = 'ft-school-opt';
-        const idx = school.toLowerCase().indexOf(q);
-        div.innerHTML = school.slice(0,idx) + `<span class="ft-school-match">${school.slice(idx,idx+q.length)}</span>` + school.slice(idx+q.length);
-        div.addEventListener('click', () => showSelected(school));
-        dropdown.appendChild(div);
-      });
+    if (!rawQ) { dropdown.classList.add('hidden'); return; }
+
+    // Instant local results
+    const local = _SCHOOL_STARTERS.filter(s => s.toLowerCase().includes(q)).slice(0, 6);
+    if (local.length) renderDropdown(local, rawQ);
+    else {
+      const searching = document.createElement('div');
+      searching.className = 'ft-school-opt';
+      searching.style.color = '#90a4ae';
+      searching.textContent = '🔍 Searching every school in the world...';
+      dropdown.appendChild(searching);
+      const custom2 = document.createElement('div');
+      custom2.className = 'ft-school-opt custom-opt';
+      custom2.textContent = `✏️ Use "${rawQ}"`;
+      custom2.addEventListener('click', () => showSelected(rawQ));
+      dropdown.appendChild(custom2);
+      dropdown.classList.remove('hidden');
     }
-    const custom = document.createElement('div');
-    custom.className = 'ft-school-opt custom-opt';
-    custom.textContent = `✏️ Use "${input.value.trim()}"`;
-    custom.addEventListener('click', () => showSelected(input.value.trim()));
-    dropdown.appendChild(custom);
-    dropdown.classList.remove('hidden');
+
+    // Debounced worldwide API search (500ms, min 3 chars)
+    clearTimeout(_schoolTimer);
+    if (rawQ.length < 3) return;
+    _lastSchoolQ = rawQ;
+    _schoolTimer = setTimeout(async () => {
+      if (_lastSchoolQ !== rawQ) return; // stale
+      const worldResults = await searchSchoolsWorld(rawQ + ' school');
+      if (_lastSchoolQ !== rawQ) return; // stale
+      if (worldResults.length) renderDropdown(worldResults, rawQ);
+    }, 500);
   });
 
   input.addEventListener('keydown', e => {
