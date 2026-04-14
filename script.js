@@ -1,57 +1,116 @@
-// Weather Now — Open-Meteo (free, no API key needed)
+// Wes's Weather World — Open-Meteo (free, no API key)
 
 const WMO = {
-  0:  ['Clear Sky',          '☀️', 'sunny'],
-  1:  ['Mostly Clear',       '🌤️', 'sunny'],
-  2:  ['Partly Cloudy',      '⛅',  'cloudy'],
-  3:  ['Overcast',           '☁️',  'cloudy'],
-  45: ['Foggy',              '🌫️', 'foggy'],
-  48: ['Icy Fog',            '🌫️', 'foggy'],
-  51: ['Light Drizzle',      '🌦️', 'rainy'],
-  53: ['Drizzle',            '🌦️', 'rainy'],
-  55: ['Heavy Drizzle',      '🌧️', 'rainy'],
-  61: ['Light Rain',         '🌧️', 'rainy'],
-  63: ['Rain',               '🌧️', 'rainy'],
-  65: ['Heavy Rain',         '🌧️', 'rainy'],
-  71: ['Light Snow',         '🌨️', 'snowy'],
-  73: ['Snow',               '❄️',  'snowy'],
-  75: ['Heavy Snow',         '❄️',  'snowy'],
-  77: ['Snow Grains',        '🌨️', 'snowy'],
-  80: ['Light Showers',      '🌦️', 'rainy'],
-  81: ['Showers',            '🌧️', 'rainy'],
-  82: ['Heavy Showers',      '⛈️', 'stormy'],
-  85: ['Snow Showers',       '🌨️', 'snowy'],
-  86: ['Heavy Snow Showers', '🌨️', 'snowy'],
-  95: ['Thunderstorm',       '⛈️', 'stormy'],
-  96: ['Thunderstorm+Hail',  '⛈️', 'stormy'],
-  99: ['Thunderstorm+Hail',  '⛈️', 'stormy'],
+  0:  ['Clear Sky',     '☀️',  'sunny'],
+  1:  ['Mostly Clear',  '🌤️', 'sunny'],
+  2:  ['Partly Cloudy', '⛅',  'cloudy'],
+  3:  ['Overcast',      '☁️',  'cloudy'],
+  45: ['Foggy',         '🌫️', 'foggy'],
+  48: ['Icy Fog',       '🌫️', 'foggy'],
+  51: ['Light Drizzle', '🌦️', 'rainy'],
+  53: ['Drizzle',       '🌦️', 'rainy'],
+  55: ['Heavy Drizzle', '🌧️', 'rainy'],
+  61: ['Light Rain',    '🌧️', 'rainy'],
+  63: ['Rain',          '🌧️', 'rainy'],
+  65: ['Heavy Rain',    '🌧️', 'rainy'],
+  71: ['Light Snow',    '🌨️', 'snowy'],
+  73: ['Snow',          '❄️',  'snowy'],
+  75: ['Heavy Snow',    '❄️',  'snowy'],
+  77: ['Snow Grains',   '🌨️', 'snowy'],
+  80: ['Light Showers', '🌦️', 'rainy'],
+  81: ['Showers',       '🌧️', 'rainy'],
+  82: ['Heavy Showers', '⛈️', 'stormy'],
+  85: ['Snow Showers',  '🌨️', 'snowy'],
+  86: ['Heavy Snow',    '🌨️', 'snowy'],
+  95: ['Thunderstorm',  '⛈️', 'stormy'],
+  96: ['Storm + Hail',  '⛈️', 'stormy'],
+  99: ['Storm + Hail',  '⛈️', 'stormy'],
 };
 
+// Big animated mascot per theme
+const MASCOTS = {
+  sunny:       '😎',
+  'clear-night':'🌙',
+  cloudy:      '😶‍🌫️',
+  rainy:       '🌧️',
+  snowy:       '⛄',
+  stormy:      '😱',
+  foggy:       '👻',
+};
+
+// Title bar icon per theme
+const TITLE_ICONS = {
+  sunny:       '☀️',
+  'clear-night':'🌙',
+  cloudy:      '☁️',
+  rainy:       '☔',
+  snowy:       '❄️',
+  stormy:      '⛈️',
+  foggy:       '🌫️',
+};
+
+// Fun facts for kids
+const FACTS = {
+  sunny:  [
+    'Lightning strikes Earth about 100 times every second! ⚡',
+    'The Sun is SO big that 1 million Earths could fit inside it! 🌍',
+    'A sunny day on Venus would be worse — it\'s 900°F there! 🔥',
+  ],
+  cloudy: [
+    'Clouds are made of billions of tiny water droplets! 💧',
+    'A fluffy cloud can weigh as much as 100 elephants! 🐘',
+    'The highest clouds are called "noctilucent" and glow at night! ✨',
+  ],
+  rainy:  [
+    'Rain drops fall at about 14 miles per hour! 💨',
+    'A single thunderstorm can drop millions of gallons of water! 🌊',
+    'Rainbows are actually full circles — you just see the top half! 🌈',
+  ],
+  snowy:  [
+    'No two snowflakes are exactly alike — ever! ❄️',
+    'Snow is actually clear, not white. It just looks white! 🤍',
+    'The biggest snowflake ever was 15 inches wide — as big as a pizza! 🍕',
+  ],
+  stormy: [
+    'Thunder is the sound of air expanding super fast from lightning! 💥',
+    'A lightning bolt is 5x hotter than the surface of the Sun! 🌞',
+    'You can tell how far away lightning is — count seconds after the flash! 🔢',
+  ],
+  foggy:  [
+    'Fog is basically a cloud that\'s touching the ground! ☁️',
+    'Some places in California get fog so thick it drips like rain! 🌁',
+    'San Francisco is famous for its fog — it even has a name: "Karl"! 🌉',
+  ],
+  'clear-night': [
+    'There are more stars in space than grains of sand on all Earth\'s beaches! ⭐',
+    'The Moon is slowly moving away from Earth — about 1.5 inches per year! 🌕',
+    'You can see the International Space Station with just your eyes! 🚀',
+  ],
+};
+
+// Tips for kids
 const TIPS = {
-  sunny:  ['Great day to go outside — don\'t forget sunscreen!', 'Clear skies ahead. Perfect for a walk or a bike ride.', 'Sun\'s out! Stay hydrated.'],
-  cloudy: ['Clouds are nature\'s sunshade. Enjoy the mild light!', 'Overcast days are great for photography — no harsh shadows.', 'A cozy reading-indoors kind of day.'],
-  rainy:  ['Grab an umbrella before heading out!', 'Perfect weather for hot cocoa and a good book.', 'Rain is great — the plants love it!'],
-  snowy:  ['Bundle up and enjoy the snow!', 'Watch out for icy paths. Wear grip shoes.', 'Snow day vibes! ⛄'],
-  stormy: ['Stay indoors and away from windows during thunder.', 'Unplug sensitive electronics during the storm.', 'Thunder means lightning is nearby. Stay safe!'],
-  foggy:  ['Low visibility — drive slowly and use fog lights.', 'Foggy mornings often clear into beautiful afternoons!', 'Mysterious weather today. Stay alert while driving.'],
+  sunny:       '😎 Put on sunscreen before going outside today!',
+  cloudy:      '🧥 Might want a light jacket — it could get breezy!',
+  rainy:       '☔ Don\'t forget your umbrella! Puddle jumping is optional 😄',
+  snowy:       '⛄ Bundle up with your warmest coat, hat, and gloves!',
+  stormy:      '🏠 Best to stay inside during the storm. Stay safe!',
+  foggy:       '👀 It\'s foggy out — hold a grown-up\'s hand if you go out!',
+  'clear-night':'🌙 Great night to stargaze! Can you find the Big Dipper?',
 };
 
 function wmo(code) { return WMO[code] || ['Unknown', '🌡️', 'cloudy']; }
-
-function pickTip(theme) {
-  const arr = TIPS[theme] || TIPS.cloudy;
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // State
-let useCelsius    = false;
-let currentData   = null;
-let currentCity   = '';
-let currentCountry= '';
-let refreshTimer  = null;
-let countdown     = 600; // 10 min
+let useCelsius     = false;
+let currentData    = null;
+let currentCity    = '';
+let currentCountry = '';
+let refreshTimer   = null;
+let countdown      = 600;
 
-// DOM refs
+// DOM
 const cityInput   = document.getElementById('city-input');
 const searchBtn   = document.getElementById('search-btn');
 const locateBtn   = document.getElementById('locate-btn');
@@ -63,11 +122,12 @@ const bgLayer     = document.getElementById('bg-layer');
 const particles   = document.getElementById('particles');
 const unitToggle  = document.getElementById('unit-toggle');
 const refreshInfo = document.getElementById('refresh-info');
+const titleIcon   = document.getElementById('title-icon');
 
-// ── Unit toggle ──
+// Unit toggle
 unitToggle.addEventListener('click', () => {
   useCelsius = !useCelsius;
-  unitToggle.textContent = useCelsius ? '°F' : '°C';
+  unitToggle.textContent = useCelsius ? 'Switch to °F' : 'Switch to °C';
   if (currentData) renderWeather(currentData, currentCity, currentCountry);
 });
 
@@ -76,15 +136,15 @@ function fmt(val) {
   return Math.round(useCelsius ? val : toF(val)) + (useCelsius ? '°C' : '°F');
 }
 
-// ── Search / locate ──
+// Search / locate
 searchBtn.addEventListener('click', () => { const q = cityInput.value.trim(); if (q) searchCity(q); });
 cityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchBtn.click(); });
 locateBtn.addEventListener('click', () => {
-  if (!navigator.geolocation) return showError('Geolocation not supported.');
+  if (!navigator.geolocation) return showError('Geolocation not supported 😢');
   show('loading');
   navigator.geolocation.getCurrentPosition(
     (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude, 'My Location', ''),
-    () => showError('Location access denied.')
+    () => showError('Location access denied 😢')
   );
 });
 
@@ -93,10 +153,10 @@ async function searchCity(query) {
   try {
     const res  = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`);
     const data = await res.json();
-    if (!data.results?.length) return showError(`City "${query}" not found.`);
+    if (!data.results?.length) return showError(`Hmm, can't find "${query}" 🤔 Try another city!`);
     const { latitude, longitude, name, country } = data.results[0];
     fetchWeather(latitude, longitude, name, country);
-  } catch { showError('Could not reach geocoding service.'); }
+  } catch { showError('Oops! Couldn\'t connect. Try again! 🌐'); }
 }
 
 async function fetchWeather(lat, lon, city, country) {
@@ -108,7 +168,8 @@ async function fetchWeather(lat, lon, city, country) {
       `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,` +
       `relative_humidity_2m,visibility,surface_pressure,dew_point_2m` +
       `&hourly=temperature_2m,weather_code,precipitation_probability,uv_index` +
-      `&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_probability_max` +
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,` +
+      `precipitation_probability_max` +
       `&temperature_unit=celsius&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=7`;
 
     const res  = await fetch(url);
@@ -116,72 +177,69 @@ async function fetchWeather(lat, lon, city, country) {
     currentData = data;
     renderWeather(data, city, country);
     startRefreshCountdown(lat, lon, city, country);
-  } catch { showError('Could not fetch weather data.'); }
+  } catch { showError('Oops! Couldn\'t get the weather. Try again! ☁️'); }
 }
 
-// ── Render ──
 function renderWeather(d, city, country) {
-  const c = d.current;
+  const c   = d.current;
+  const now = new Date();
 
   // Location & time
   document.getElementById('city-name').textContent = city;
-  document.getElementById('country').textContent   = country;
-  const now = new Date();
-  document.getElementById('datetime').textContent =
-    now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) +
+  document.getElementById('country').textContent   = country ? ', ' + country : '';
+  document.getElementById('datetime').textContent  =
+    now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' }) +
     ' · ' + now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
 
-  // Current condition
-  const [condText, condIcon, theme] = wmo(c.weather_code);
-
-  // Day or night?
+  // Condition
+  const [condText, , theme] = wmo(c.weather_code);
   const sunriseMs = new Date(d.daily.sunrise[0]).getTime();
   const sunsetMs  = new Date(d.daily.sunset[0]).getTime();
   const isNight   = now.getTime() < sunriseMs || now.getTime() > sunsetMs;
-  const bgTheme   = isNight && (theme === 'sunny') ? 'clear-night' : theme;
+  const bgTheme   = isNight && theme === 'sunny' ? 'clear-night' : theme;
 
-  // Set background
-  setBackground(bgTheme, isNight);
+  setBackground(bgTheme);
+
+  // Mascot + title icon
+  document.getElementById('mascot').textContent    = MASCOTS[bgTheme] || '🌡️';
+  titleIcon.textContent                            = TITLE_ICONS[bgTheme] || '🌤️';
 
   document.getElementById('temp').textContent      = fmt(c.temperature_2m);
   document.getElementById('feels').textContent     = fmt(c.apparent_temperature);
-  document.getElementById('cond-icon').textContent = condIcon;
   document.getElementById('cond-text').textContent = condText;
   document.getElementById('humidity').textContent  = c.relative_humidity_2m + '%';
   document.getElementById('wind').textContent      = Math.round(c.wind_speed_10m) + ' mph';
   document.getElementById('wind-dir').textContent  = degToCompass(c.wind_direction_10m);
   document.getElementById('visibility').textContent = c.visibility >= 1000
     ? (c.visibility / 1000).toFixed(1) + ' km' : c.visibility + ' m';
-  document.getElementById('pressure').textContent  = Math.round(c.surface_pressure) + ' hPa';
-  document.getElementById('dewpoint').textContent  = fmt(c.dew_point_2m);
 
-  // UV Index from current hour
+  // UV from nearest hour
   const currentHourIdx = d.hourly.time.findIndex(t => new Date(t) >= now);
-  const uvVal = d.hourly.uv_index[currentHourIdx >= 0 ? currentHourIdx : 0] ?? 0;
+  const uvIdx = currentHourIdx >= 0 ? currentHourIdx : 0;
+  const uvVal = d.hourly.uv_index[uvIdx] ?? 0;
   const uvEl  = document.getElementById('uv');
-  uvEl.textContent = uvVal.toFixed(1) + ' ' + uvLabel(uvVal);
+  uvEl.textContent = uvVal.toFixed(1) + ' — ' + uvLabel(uvVal);
   uvEl.className   = uvClass(uvVal);
 
-  // Sunrise / sunset
-  const fmt2 = (iso) => new Date(iso).toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
-  document.getElementById('sunrise').textContent = fmt2(d.daily.sunrise[0]);
-  document.getElementById('sunset').textContent  = fmt2(d.daily.sunset[0]);
+  // Sunrise/sunset
+  const fmtT = (iso) => new Date(iso).toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('sunrise').textContent = fmtT(d.daily.sunrise[0]);
+  document.getElementById('sunset').textContent  = fmtT(d.daily.sunset[0]);
 
-  // AQI banner (simple placeholder based on visibility as proxy)
-  const aqiBanner = document.getElementById('aqi-banner');
-  aqiBanner.classList.add('hidden'); // hide — no AQI from open-meteo basic tier
+  // Fun fact
+  const facts = FACTS[bgTheme] || FACTS.cloudy;
+  document.getElementById('funfact-text').textContent = pickRandom(facts);
 
-  // Hourly (next 24 hrs)
-  const track = document.getElementById('hourly-track');
+  // Hourly
+  const track  = document.getElementById('hourly-track');
   track.innerHTML = '';
-  const startIdx = currentHourIdx >= 0 ? currentHourIdx : 0;
-  const hourTemps = d.hourly.temperature_2m.slice(startIdx, startIdx + 24);
-  const minHT = Math.min(...hourTemps);
-  const maxHT = Math.max(...hourTemps);
+  const start  = currentHourIdx >= 0 ? currentHourIdx : 0;
+  const hTemps = d.hourly.temperature_2m.slice(start, start + 24);
+  const minHT  = Math.min(...hTemps), maxHT = Math.max(...hTemps);
 
-  for (let i = startIdx; i < startIdx + 24 && i < d.hourly.time.length; i++) {
+  for (let i = start; i < start + 24 && i < d.hourly.time.length; i++) {
     const t      = new Date(d.hourly.time[i]);
-    const isNow2 = i === startIdx;
+    const isNow2 = i === start;
     const [, icon] = wmo(d.hourly.weather_code[i]);
     const precip   = d.hourly.precipitation_probability[i] ?? 0;
     const tempVal  = d.hourly.temperature_2m[i];
@@ -190,21 +248,21 @@ function renderWeather(d, city, country) {
     const card = document.createElement('div');
     card.className = 'hour-card' + (isNow2 ? ' now' : '');
     card.innerHTML = `
-      <div class="hour-time">${isNow2 ? 'Now' : t.toLocaleTimeString('en-US', { hour:'numeric', hour12:true })}</div>
+      <div class="hour-time">${isNow2 ? 'NOW' : t.toLocaleTimeString('en-US', { hour:'numeric', hour12:true })}</div>
       <div class="hour-icon">${icon}</div>
       <div class="hour-temp">${fmt(tempVal)}</div>
-      ${precip > 0 ? `<div class="hour-precip">${precip}% 💧</div>` : '<div class="hour-precip" style="opacity:0">0%</div>'}
+      <div class="hour-precip">${precip > 0 ? precip + '% 💧' : '&nbsp;'}</div>
       <div class="hour-bar-wrap"><div class="hour-bar" style="width:${barPct}%"></div></div>
     `;
     track.appendChild(card);
   }
 
   // 7-day
-  const list = document.getElementById('daily-list');
-  list.innerHTML = '';
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const allMins = d.daily.temperature_2m_min;
-  const allMaxs = d.daily.temperature_2m_max;
+  const list      = document.getElementById('daily-list');
+  list.innerHTML  = '';
+  const days      = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const allMins   = d.daily.temperature_2m_min;
+  const allMaxs   = d.daily.temperature_2m_max;
   const globalMin = Math.min(...allMins);
   const globalMax = Math.max(...allMaxs);
 
@@ -212,11 +270,10 @@ function renderWeather(d, city, country) {
     const date    = new Date(dateStr + 'T12:00:00');
     const label   = i === 0 ? 'Today' : days[date.getDay()];
     const [, icon] = wmo(d.daily.weather_code[i]);
-    const lo      = allMins[i], hi = allMaxs[i];
-    const range   = globalMax - globalMin || 1;
-    const barLeft = ((lo - globalMin) / range) * 100;
-    const barWidth= ((hi - lo) / range) * 100;
-    const precip  = d.daily.precipitation_probability_max[i] ?? 0;
+    const lo       = allMins[i], hi = allMaxs[i];
+    const range    = globalMax - globalMin || 1;
+    const barLeft  = ((lo - globalMin) / range) * 100;
+    const barWidth = ((hi - lo) / range) * 100;
 
     const row = document.createElement('div');
     row.className = 'day-row';
@@ -232,70 +289,51 @@ function renderWeather(d, city, country) {
     list.appendChild(row);
   });
 
-  // Weather tip
-  document.getElementById('tip-card').textContent = '💡 ' + pickTip(theme);
+  // Tip
+  document.getElementById('tip-card').textContent = TIPS[bgTheme] || TIPS.cloudy;
 
   show('weather');
 }
 
 // ── Background & particles ──
-const BG_THEMES = ['sunny','clear-night','cloudy','rainy','snowy','stormy','foggy'];
+const ALL_THEMES = ['sunny','clear-night','cloudy','rainy','snowy','stormy','foggy'];
 
-function setBackground(theme, isNight) {
-  BG_THEMES.forEach(t => bgLayer.classList.remove('bg-' + t));
+function setBackground(theme) {
+  ALL_THEMES.forEach(t => bgLayer.classList.remove('bg-' + t));
   bgLayer.classList.add('bg-' + theme);
-  spawnParticles(theme, isNight);
+  spawnParticles(theme);
 }
 
-function spawnParticles(theme, isNight) {
+function spawnParticles(theme) {
   particles.innerHTML = '';
 
   if (theme === 'rainy' || theme === 'stormy') {
-    const count = theme === 'stormy' ? 80 : 50;
+    const count = theme === 'stormy' ? 90 : 55;
     for (let i = 0; i < count; i++) {
       const el = document.createElement('div');
       el.className = 'particle drop';
-      const h = 8 + Math.random() * 18;
-      el.style.cssText = `
-        left: ${Math.random() * 100}%;
-        top: ${-Math.random() * 30}%;
-        height: ${h}px;
-        opacity: ${0.3 + Math.random() * 0.4};
-        animation-duration: ${0.4 + Math.random() * 0.5}s;
-        animation-delay: ${-Math.random() * 2}s;
-      `;
+      const h = 10 + Math.random() * 20;
+      el.style.cssText = `left:${Math.random()*100}%;top:${-Math.random()*30}%;height:${h}px;opacity:${0.3+Math.random()*0.5};animation-duration:${0.35+Math.random()*0.45}s;animation-delay:${-Math.random()*2}s;`;
       particles.appendChild(el);
     }
   }
 
   if (theme === 'snowy') {
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 70; i++) {
       const el = document.createElement('div');
       el.className = 'particle flake';
-      const sz = 3 + Math.random() * 6;
-      el.style.cssText = `
-        left: ${Math.random() * 100}%;
-        top: ${-Math.random() * 20}%;
-        width: ${sz}px; height: ${sz}px;
-        animation-duration: ${3 + Math.random() * 4}s;
-        animation-delay: ${-Math.random() * 5}s;
-      `;
+      const sz = 4 + Math.random() * 7;
+      el.style.cssText = `left:${Math.random()*100}%;top:${-Math.random()*20}%;width:${sz}px;height:${sz}px;animation-duration:${3+Math.random()*4}s;animation-delay:${-Math.random()*5}s;`;
       particles.appendChild(el);
     }
   }
 
   if (theme === 'clear-night') {
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 130; i++) {
       const el = document.createElement('div');
       el.className = 'particle star';
-      const sz = 1 + Math.random() * 2.5;
-      el.style.cssText = `
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 70}%;
-        width: ${sz}px; height: ${sz}px;
-        animation-duration: ${1.5 + Math.random() * 3}s;
-        animation-delay: ${-Math.random() * 4}s;
-      `;
+      const sz = 1 + Math.random() * 3;
+      el.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*75}%;width:${sz}px;height:${sz}px;animation-duration:${1.5+Math.random()*3}s;animation-delay:${-Math.random()*4}s;`;
       particles.appendChild(el);
     }
   }
@@ -303,18 +341,15 @@ function spawnParticles(theme, isNight) {
 
 // ── Helpers ──
 function degToCompass(deg) {
-  const dirs = ['N','NE','E','SE','S','SW','W','NW'];
-  return dirs[Math.round(deg / 45) % 8];
+  return ['N','NE','E','SE','S','SW','W','NW'][Math.round(deg / 45) % 8];
 }
-
 function uvLabel(uv) {
-  if (uv < 3)  return '(Low)';
-  if (uv < 6)  return '(Mod)';
-  if (uv < 8)  return '(High)';
-  if (uv < 11) return '(V.High)';
-  return '(Extreme)';
+  if (uv < 3)  return 'Low 🟢';
+  if (uv < 6)  return 'Medium 🟡';
+  if (uv < 8)  return 'High 🟠';
+  if (uv < 11) return 'Very High 🔴';
+  return 'Extreme 🟣';
 }
-
 function uvClass(uv) {
   if (uv < 3)  return 'uv-low';
   if (uv < 6)  return 'uv-mod';
@@ -323,34 +358,26 @@ function uvClass(uv) {
   return 'uv-extreme';
 }
 
-// ── Auto-refresh every 10 min ──
+// ── Auto-refresh ──
 function startRefreshCountdown(lat, lon, city, country) {
   clearInterval(refreshTimer);
   countdown = 600;
-  updateRefreshLabel();
+  updateLabel();
   refreshTimer = setInterval(() => {
     countdown--;
-    updateRefreshLabel();
-    if (countdown <= 0) {
-      countdown = 600;
-      fetchWeather(lat, lon, city, country);
-    }
+    updateLabel();
+    if (countdown <= 0) { countdown = 600; fetchWeather(lat, lon, city, country); }
   }, 1000);
 }
-
-function updateRefreshLabel() {
-  const m = Math.floor(countdown / 60);
-  const s = countdown % 60;
-  refreshInfo.textContent = `Auto-refresh in ${m}:${String(s).padStart(2,'0')}`;
+function updateLabel() {
+  const m = Math.floor(countdown / 60), s = countdown % 60;
+  refreshInfo.textContent = `🔄 Updates in ${m}:${String(s).padStart(2,'0')}`;
 }
 
 // ── Show/hide ──
 function showError(msg) { errorMsg.textContent = msg; show('error'); }
-
 function show(which) {
-  loadingEl.classList.add('hidden');
-  errorEl.classList.add('hidden');
-  weatherEl.classList.add('hidden');
+  [loadingEl, errorEl, weatherEl].forEach(el => el.classList.add('hidden'));
   if (which === 'loading') loadingEl.classList.remove('hidden');
   if (which === 'error')   errorEl.classList.remove('hidden');
   if (which === 'weather') weatherEl.classList.remove('hidden');
