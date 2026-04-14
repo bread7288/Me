@@ -31,9 +31,9 @@ const MASCOTS = { sunny:'😎', 'clear-night':'🌙', cloudy:'🙂', rainy:'🌧
 const VIBES   = { sunny:"It's beautiful outside!", 'clear-night':"The stars are out tonight!", cloudy:"A bit cloudy today!", rainy:"Grab your umbrella!", snowy:"Snow day! ⛄", stormy:"Stay safe inside!", foggy:"Super foggy out there!" };
 
 const WEAR = {
-  sunny:        [['👕','T-shirt'],['😎','Sunglasses'],['🧴','Sunscreen']],
+  sunny:        [['🧴','Sunscreen']],
   'clear-night':[['🧥','Jacket'],['🌟','Stargazing!']],
-  cloudy:       [['👕','T-shirt'],['🧥','Light jacket']],
+  cloudy:       [['🧥','Light jacket']],
   rainy:        [['☔','Umbrella'],['🥾','Rain boots'],['🧥','Rain jacket']],
   snowy:        [['🧤','Gloves'],['🧣','Scarf'],['🥾','Snow boots'],['🧥','Big coat']],
   stormy:       [['🏠','Stay inside'],['🕯️','Flashlight just in case']],
