@@ -190,19 +190,68 @@
       <!-- WEATHER MAP -->
       <div class="section-head">🗺️ Weather Map</div>
       <div class="map-section">
-        <div class="map-group-label">🌤️ Weather Layers</div>
+        <div class="map-group-label">🌧️ Precipitation</div>
         <div class="map-controls">
           <button class="map-btn active" data-layer="rain">🌧️ Rain</button>
-          <button class="map-btn" data-layer="wind">💨 Wind</button>
-          <button class="map-btn" data-layer="temp">🌡️ Temp</button>
-          <button class="map-btn" data-layer="clouds">☁️ Clouds</button>
-          <button class="map-btn" data-layer="snowcover">❄️ Snow</button>
-          <button class="map-btn" data-layer="rh">💧 Humidity</button>
-          <button class="map-btn" data-layer="uvindex">🔆 UV</button>
-          <button class="map-btn" data-layer="cape">⛈️ Storms</button>
-          <button class="map-btn" data-layer="waves">🌊 Waves</button>
+          <button class="map-btn" data-layer="rainAccu">🌧️ Rain Total</button>
+          <button class="map-btn" data-layer="snowAccu">❄️ Snow Total</button>
+          <button class="map-btn" data-layer="snowcover">🏔️ Snow Cover</button>
+          <button class="map-btn" data-layer="ptype">🌨️ Precip Type</button>
+          <button class="map-btn" data-layer="thunder">⚡ Thunder</button>
         </div>
-        <div class="map-group-label">🏭 Pollution Layers</div>
+        <div class="map-group-label">💨 Wind</div>
+        <div class="map-controls">
+          <button class="map-btn" data-layer="wind">💨 Wind Speed</button>
+          <button class="map-btn" data-layer="gust">💥 Wind Gusts</button>
+          <button class="map-btn" data-layer="cape">⛈️ Storm Index</button>
+          <button class="map-btn" data-layer="efiWind">🌪️ Extreme Wind</button>
+        </div>
+        <div class="map-group-label">🌡️ Temperature</div>
+        <div class="map-controls">
+          <button class="map-btn" data-layer="temp">🌡️ Temperature</button>
+          <button class="map-btn" data-layer="dewpoint">💦 Dew Point</button>
+          <button class="map-btn" data-layer="wetbulb">🌫️ Wet Bulb</button>
+          <button class="map-btn" data-layer="freezinglevel">🧊 Freeze Level</button>
+          <button class="map-btn" data-layer="efiTemp">🔥 Extreme Temp</button>
+        </div>
+        <div class="map-group-label">☁️ Sky & Atmosphere</div>
+        <div class="map-controls">
+          <button class="map-btn" data-layer="clouds">☁️ Clouds</button>
+          <button class="map-btn" data-layer="cloudtop">🏔️ Cloud Top</button>
+          <button class="map-btn" data-layer="fog">🌫️ Fog</button>
+          <button class="map-btn" data-layer="visibility">👁️ Visibility</button>
+          <button class="map-btn" data-layer="rh">💧 Humidity</button>
+          <button class="map-btn" data-layer="pressure">🔵 Pressure</button>
+          <button class="map-btn" data-layer="uvindex">🔆 UV Index</button>
+          <button class="map-btn" data-layer="gtco3">🟣 Ozone</button>
+        </div>
+        <div class="map-group-label">📡 Satellite & Radar</div>
+        <div class="map-controls">
+          <button class="map-btn" data-layer="satellite">🛰️ Satellite</button>
+          <button class="map-btn" data-layer="radar">📡 Radar</button>
+          <button class="map-btn" data-layer="gh">🗻 Geo Height</button>
+          <button class="map-btn" data-layer="efiPrecip">🌊 Extreme Rain</button>
+        </div>
+        <div class="map-group-label">🌊 Ocean & Waves</div>
+        <div class="map-controls">
+          <button class="map-btn" data-layer="waves">🌊 Waves</button>
+          <button class="map-btn" data-layer="swell1">🏄 Swell 1</button>
+          <button class="map-btn" data-layer="swell2">🏄 Swell 2</button>
+          <button class="map-btn" data-layer="wwaves">💨 Wind Waves</button>
+          <button class="map-btn" data-layer="sst">🌡️ Sea Temp</button>
+          <button class="map-btn" data-layer="currents">🌀 Currents</button>
+        </div>
+        <div class="map-group-label">✈️ Aviation</div>
+        <div class="map-controls">
+          <button class="map-btn" data-layer="turbulence">✈️ Turbulence</button>
+          <button class="map-btn" data-layer="icing">🧊 Icing</button>
+        </div>
+        <div class="map-group-label">🔥 Fires & Extreme Events</div>
+        <div class="map-controls">
+          <button class="map-btn" data-layer="fires_viirs">🔥 Fire Spots</button>
+          <button class="map-btn" data-layer="fires_power">💥 Fire Power</button>
+        </div>
+        <div class="map-group-label">🏭 Air Pollution</div>
         <div class="map-controls">
           <button class="map-btn" data-layer="pm2p5">🔴 PM2.5</button>
           <button class="map-btn" data-layer="aqi">😷 AQI</button>
