@@ -784,22 +784,62 @@ const FT_WEATHER = {
   stormy:       [['📞','Emergency contact #'],['☔','Full rain gear'],['🏠','Check if trip is still on!'],['🔦','Flashlight']],
   foggy:        [['🧥','Jacket'],['🔦','Small flashlight'],['👟','Good grip shoes'],['🌡️','Layer up!']],
 };
+const FT_TRIP_EXTRAS = {
+  farm:   {
+    label: '🐄 Farm Visit Extras',
+    tip: '🚜 Bared Farm Tips: Wear clothes you don\'t mind getting muddy! Animals are exciting but be gentle. Don\'t feed animals unless a farmer says it\'s okay!',
+    items: [['👟','OLD shoes — it WILL get muddy!'],['👖','Old clothes you don\'t mind getting dirty'],['🧤','Gloves (for touching animals)'],['🤧','Allergy medicine (hay & animals)'],['🧴','Hand sanitizer — wash hands after animals!'],['📸','Camera or phone for animal pics'],['👃','FYI — farms can smell funny! 😄'],['🥕','Don\'t bring your own animal food']],
+  },
+  museum: {
+    label: '🏛️ Museum Extras',
+    tip: '🎨 Museum Tips: Walk quietly, don\'t touch the exhibits, and read all the signs — you might learn something amazing!',
+    items: [['📓','Small notebook for notes'],['✏️','Pencil (pens sometimes not allowed)'],['👟','Comfy walking shoes'],['🤫','Inside voice ready!'],['📸','Camera (check if photos are allowed)']],
+  },
+  nature: {
+    label: '🌿 Nature & Hiking Extras',
+    tip: '🥾 Hiking Tips: Stay on the trail, don\'t pick plants, and always walk with your group!',
+    items: [['🥾','Good hiking shoes/boots'],['🧴','Bug spray'],['🧴','Sunscreen'],['🔦','Small flashlight'],['🗺️','Trail map if available'],['🧤','Gloves if cold'],['🩹','Small first aid kit']],
+  },
+  beach: {
+    label: '🏖️ Beach Extras',
+    tip: '🌊 Beach Tips: Always swim where a lifeguard can see you, and put sunscreen on EVERY hour!',
+    items: [['🩱','Swimsuit'],['🏊','Towel'],['🧴','Lots of sunscreen (SPF 50+)'],['🕶️','Sunglasses'],['🧢','Hat'],['👟','Water shoes'],['👙','Change of dry clothes'],['🛍️','Bag for wet stuff']],
+  },
+  zoo:    {
+    label: '🦁 Zoo Extras',
+    tip: '🐘 Zoo Tips: Never tap the glass or yell at animals — it stresses them out. Try to spot animals hiding!',
+    items: [['👟','Comfy walking shoes'],['🗺️','Zoo map'],['📸','Camera for animal photos'],['🧴','Sunscreen (lots of walking outside!)'],['🤐','Quiet calm voice around shy animals']],
+  },
+  park:   {
+    label: '🏞️ Park Extras',
+    tip: '⚽ Park Tips: Stay in the designated areas and pick up any trash you see!',
+    items: [['⚽','Sports equipment if allowed'],['🛼','Roller blades / scooter if allowed'],['🧴','Sunscreen'],['🪁','Frisbee or kite'],['🧺','Picnic blanket']],
+  },
+};
+
+let currentTripType = 'farm'; // default to farm since that's where Wes is going!
+
 function renderFieldTrip(theme) {
   const groups = document.getElementById('fieldtrip-groups');
   const intro  = document.getElementById('fieldtrip-intro');
   const packed = document.getElementById('fieldtrip-packed');
+  if (!currentTripType) { intro.textContent = '👆 Pick your trip type above first!'; groups.innerHTML = ''; return; }
   const weatherItems = FT_WEATHER[theme] || FT_WEATHER.cloudy;
-  const allItems = [
-    { label: '✅ Always Bring', icon: '📋', items: FT_ALWAYS },
-    { label: `${MASCOTS[theme]||'🌤️'} For Today's ${theme.charAt(0).toUpperCase()+theme.slice(1)} Weather`, icon: '🌤️', items: weatherItems },
+  const tripExtra = FT_TRIP_EXTRAS[currentTripType];
+  const themeLabel = theme.charAt(0).toUpperCase() + theme.slice(1).replace('-',' ');
+  const allGroups = [
+    { label: '✅ Always Bring', items: FT_ALWAYS },
+    { label: `${MASCOTS[theme]||'🌤️'} For Today's ${themeLabel} Weather`, items: weatherItems },
+    { label: tripExtra.label, items: tripExtra.items, tip: tripExtra.tip },
   ];
   intro.textContent = 'Tap each item to check it off your list!';
   groups.innerHTML = '';
   let totalItems = 0, checkedItems = 0;
-  allItems.forEach(group => {
+  allGroups.forEach(group => {
     const div = document.createElement('div');
     div.className = 'fieldtrip-group';
-    div.innerHTML = `<div class="fieldtrip-group-lbl">${group.label}</div><div class="fieldtrip-items"></div>`;
+    let tipHtml = group.tip ? `<div class="ft-farm-tip">${group.tip}</div>` : '';
+    div.innerHTML = `<div class="fieldtrip-group-lbl">${group.label}</div>${tipHtml}<div class="fieldtrip-items"></div>`;
     const itemsEl = div.querySelector('.fieldtrip-items');
     group.items.forEach(([em, text]) => {
       totalItems++;
@@ -818,6 +858,26 @@ function renderFieldTrip(theme) {
   });
   packed.classList.add('hidden');
 }
+
+// Trip type picker
+document.querySelectorAll('.ft-trip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ft-trip-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTripType = btn.dataset.trip;
+    if (currentData) {
+      const c = currentData.current;
+      const [,,rawT] = wmo(c.weather_code);
+      const now = new Date(), sr = new Date(currentData.daily.sunrise[0]), ss = new Date(currentData.daily.sunset[0]);
+      const theme = (now < sr || now > ss) && rawT === 'sunny' ? 'clear-night' : rawT;
+      renderFieldTrip(theme);
+    } else {
+      document.getElementById('fieldtrip-intro').textContent = 'Now search a city to see your full packing list!';
+    }
+  });
+});
+// Pre-select farm since that's Wes's trip!
+document.querySelector('.ft-trip-btn[data-trip="farm"]').classList.add('active');
 
 // ── Clickable Mascot ──
 const MASCOT_SAYINGS = {

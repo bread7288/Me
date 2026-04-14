@@ -153,6 +153,13 @@ body { font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 20px 14px 
 .ft-icon { font-size:1.4rem; flex-shrink:0; }
 .ft-text { font-weight:800; font-size:.95rem; color:#333; }
 .fieldtrip-packed { font-family:'Fredoka One',cursive; font-size:1.6rem; text-align:center; color:#4caf50; padding:16px; background:#e8f5e9; border-radius:18px; margin-top:16px; animation:popIn .4s cubic-bezier(.34,1.56,.64,1); }
+.ft-trip-picker { margin-bottom:18px; }
+.ft-trip-lbl { font-family:'Fredoka One',cursive; font-size:1rem; color:#555; margin-bottom:10px; }
+.ft-trip-btns { display:flex; gap:8px; flex-wrap:wrap; }
+.ft-trip-btn { background:#f0f4ff; border:3px solid #dde3ff; border-radius:50px; padding:9px 16px; font-family:'Nunito',sans-serif; font-size:.9rem; font-weight:900; cursor:pointer; transition:all .2s; color:#555; }
+.ft-trip-btn:hover { transform:translateY(-2px); border-color:#7c4dff; }
+.ft-trip-btn.active { background:linear-gradient(135deg,#4caf50,#66bb6a); color:white; border-color:#4caf50; box-shadow:0 4px 0 #1b5e20; transform:translateY(-2px); }
+.ft-farm-tip { background:linear-gradient(135deg,#fff8e1,#ffe082); border-radius:16px; padding:14px 16px; margin-bottom:16px; font-size:.9rem; font-weight:800; color:#5d4037; border:2px solid #ffc107; line-height:1.5; }
 
 /* ─── HOURLY ─── */
 .hourly-wrap { overflow-x:auto; margin-bottom:22px; padding-bottom:8px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.3) transparent; }
