@@ -153,6 +153,13 @@ body { font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 20px 14px 
 .ft-icon { font-size:1.4rem; flex-shrink:0; }
 .ft-text { font-weight:800; font-size:.95rem; color:#333; }
 .fieldtrip-packed { font-family:'Fredoka One',cursive; font-size:1.6rem; text-align:center; color:#4caf50; padding:16px; background:#e8f5e9; border-radius:18px; margin-top:16px; animation:popIn .4s cubic-bezier(.34,1.56,.64,1); }
+/* ─── AGE PICKER ─── */
+.ft-age-picker { margin-bottom:20px; padding-bottom:18px; border-bottom:2px solid #eee; }
+.ft-age-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.ft-age-btn { background:#f0f4ff; border:3px solid #dde3ff; border-radius:50%; width:46px; height:46px; font-family:'Fredoka One',cursive; font-size:1rem; color:#555; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; }
+.ft-age-btn:hover { background:#e3e9ff; border-color:#7c4dff; color:#7c4dff; transform:scale(1.1); }
+.ft-age-btn.active { background:#7c4dff; border-color:#7c4dff; color:#fff; transform:scale(1.15); box-shadow:0 4px 14px #7c4dff55; }
+.ft-age-label { margin-top:10px; font-family:'Fredoka One',cursive; font-size:1.05rem; color:#7c4dff; min-height:1.4em; transition:all .3s; }
 /* ─── SCHOOL PICKER ─── */
 .ft-school-picker { margin-bottom:20px; padding-bottom:18px; border-bottom:2px solid #eee; }
 .ft-school-search-wrap { position:relative; margin-top:10px; }

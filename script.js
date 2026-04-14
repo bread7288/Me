@@ -949,6 +949,58 @@ const _SCHOOL_STARTERS = [
 let selectedSchool = localStorage.getItem('wes_school') || '';
 let _schoolTimer = null;
 let _lastSchoolQ = '';
+let _userAge = parseInt(localStorage.getItem('wes_age') || '0', 10);
+
+// Map age → school grade level info
+const AGE_INFO = {
+  4:  { label:'Pre-K 🌱', grade:'Pre-K',      types:'preschool,childcare,kindergarten', emoji:'🧸' },
+  5:  { label:'Kindergarten 🌟', grade:'K',   types:'kindergarten,preschool,school',    emoji:'⭐' },
+  6:  { label:'1st Grade 📚', grade:'1st',    types:'elementary school,primary school', emoji:'📖' },
+  7:  { label:'2nd Grade 📚', grade:'2nd',    types:'elementary school,primary school', emoji:'📖' },
+  8:  { label:'3rd Grade 📚', grade:'3rd',    types:'elementary school,primary school', emoji:'📖' },
+  9:  { label:'4th Grade 📚', grade:'4th',    types:'elementary school,primary school', emoji:'📖' },
+  10: { label:'5th Grade 🏃', grade:'5th',    types:'elementary school,middle school',  emoji:'⚽' },
+  11: { label:'6th Grade 🏃', grade:'6th',    types:'middle school,junior high',        emoji:'🎒' },
+  12: { label:'7th Grade 🎮', grade:'7th',    types:'middle school,junior high',        emoji:'🎮' },
+  13: { label:'8th Grade 🎮', grade:'8th',    types:'middle school,junior high school', emoji:'🎮' },
+  14: { label:'9th Grade 🏈', grade:'9th',    types:'high school,secondary school',     emoji:'🏈' },
+  15: { label:'10th Grade 🏈', grade:'10th',  types:'high school,secondary school',     emoji:'🏈' },
+  16: { label:'11th Grade 🚗', grade:'11th',  types:'high school,secondary school',     emoji:'🚗' },
+  17: { label:'12th Grade 🎓', grade:'12th',  types:'high school,secondary school',     emoji:'🎓' },
+  18: { label:'College Freshman 🎉', grade:'College', types:'university,college',       emoji:'🎉' },
+  19: { label:'College / Adult 🎓', grade:'College+',types:'university,college,institute', emoji:'🏛️' },
+};
+
+function getAgeInfo() { return AGE_INFO[_userAge] || null; }
+
+function initAgePicker() {
+  const label = document.getElementById('ft-age-label');
+  document.querySelectorAll('.ft-age-btn').forEach(btn => {
+    const age = parseInt(btn.dataset.age, 10);
+    if (age === _userAge) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ft-age-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _userAge = age;
+      localStorage.setItem('wes_age', age);
+      const info = AGE_INFO[age];
+      if (info) {
+        label.textContent = `${info.emoji} Grade: ${info.grade} — ${info.label}`;
+        // Update school search placeholder to match age
+        const input = document.getElementById('school-search');
+        if (input) input.placeholder = `Search ${info.types.split(',')[0]}s near you...`;
+      }
+    });
+  });
+  // Set initial label
+  if (_userAge && AGE_INFO[_userAge]) {
+    const info = AGE_INFO[_userAge];
+    label.textContent = `${info.emoji} Grade: ${info.grade} — ${info.label}`;
+    const input = document.getElementById('school-search');
+    if (input) input.placeholder = `Search ${info.types.split(',')[0]}s near you...`;
+  }
+}
+initAgePicker();
 
 // All school-type amenity values for Overpass + Nominatim filtering
 const _EDU_TYPES = new Set([
@@ -1136,7 +1188,10 @@ function initSchoolPicker() {
     _lastSchoolQ = rawQ;
     _schoolTimer = setTimeout(async () => {
       if (_lastSchoolQ !== rawQ) return; // stale
-      const worldResults = await searchSchoolsWorld(rawQ + ' school');
+      // Append age-appropriate school type to bias search results
+      const ageInfo = getAgeInfo();
+      const typeHint = ageInfo ? ageInfo.types.split(',')[0].trim() : 'school';
+      const worldResults = await searchSchoolsWorld(rawQ + ' ' + typeHint);
       if (_lastSchoolQ !== rawQ) return; // stale
       if (worldResults.length) renderDropdown(worldResults, rawQ);
     }, 500);
