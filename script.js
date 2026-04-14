@@ -961,12 +961,43 @@ async function searchSchoolsWorld(q) {
       headers: { 'User-Agent': 'WesWeatherApp/1.0' }
     });
     const data = await res.json();
-    const EDU_TYPES = new Set(['school','university','college','kindergarten',
-      'academy','library','language_school','music_school','driving_school',
-      'childcare','preschool','prep_school']);
-    const EDU_WORDS = ['school','academy','elementary','middle school','high school',
-      'college','university','institute','learning','education','prep','primary',
-      'secondary','junior','senior','nursery','kindergarten','charter'];
+    const EDU_TYPES = new Set([
+      // OSM amenity types
+      'school','university','college','kindergarten','library',
+      'language_school','music_school','driving_school','childcare',
+      'preschool','prep_school','tutoring_centre','research_institute',
+      'training','dancing_school','art_school','cooking_school',
+      'surf_school','ski_school','flight_school','sailing_school',
+      'martial_arts_school','seminary','theological_college',
+      // OSM building / landuse types
+      'academy','institute','educational','school_block',
+      // generic
+      'education','vocational','polytechnic','boarding_school',
+    ]);
+    const EDU_WORDS = [
+      // core
+      'school','academy','elementary','high school','middle school',
+      'college','university','institute','learning','education',
+      // level/age
+      'prep','preparatory','primary','secondary','junior','senior',
+      'nursery','kindergarten','preschool','pre-school','infant',
+      'early childhood',
+      // type
+      'charter','magnet','montessori','waldorf','steiner','stem',
+      'vocational','trade school','technical','polytechnic','seminary',
+      'theological','boarding','military school','homeschool',
+      'language school','music school','art school','dance school',
+      'drama school','ballet school','martial arts','coding school',
+      'culinary school','nursing school','law school','medical school',
+      'dental school','pharmacy school','veterinary school',
+      'agricultural school','aviation school','flight school',
+      'driving school','swim school','sports academy','tutoring',
+      // international / multilingual
+      'école','ecole','lycée','lycee','gymnasium',
+      'grundschule','realschule','gesamtschule','hauptschule',
+      'scuola','escuela','colegio','instituto','liceo','schule',
+      'skole','skola',
+    ];
     return data.filter(r => {
       const dn = (r.display_name||'').toLowerCase();
       return EDU_TYPES.has(r.type) || EDU_TYPES.has(r.class) ||
