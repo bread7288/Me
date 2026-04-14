@@ -6,7 +6,7 @@
   <title>Wes's Weather! 🌈</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -32,6 +32,10 @@
     <div class="toolbar">
       <button id="unit-toggle" class="pill-btn">🌡️ Switch to °C</button>
       <button id="sound-btn" class="pill-btn">🔇 Sounds: OFF</button>
+      <button id="mode-toggle" class="pill-btn mode-toggle-btn" title="Switch between Kid and Adult mode">
+        <span class="mode-icon">👔</span>
+        <span class="mode-label">Adult Mode</span>
+      </button>
       <span class="refresh-info" id="refresh-info"></span>
     </div>
 

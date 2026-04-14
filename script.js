@@ -1010,6 +1010,41 @@ function initAgePicker() {
 }
 initAgePicker();
 
+// ── Adult / Kid Mode Toggle ──
+(function initModeToggle() {
+  const btn    = document.getElementById('mode-toggle');
+  const icon   = btn.querySelector('.mode-icon');
+  const label  = btn.querySelector('.mode-label');
+  const isAdult = localStorage.getItem('wes_adult') === '1';
+
+  function applyMode(adult) {
+    if (adult) {
+      document.body.classList.add('adult-mode');
+      icon.textContent  = '🎨';
+      label.textContent = 'Kid Mode';
+      document.title    = 'Weather Dashboard';
+      document.getElementById('city-input').placeholder = 'Search city or location...';
+      document.getElementById('search-btn').textContent = 'Search';
+      document.getElementById('locate-btn').textContent = '📍 Locate';
+    } else {
+      document.body.classList.remove('adult-mode');
+      icon.textContent  = '👔';
+      label.textContent = 'Adult Mode';
+      document.title    = "Wes's Weather! 🌈";
+      document.getElementById('city-input').placeholder = 'Type a city... 🏙️';
+      document.getElementById('search-btn').textContent = '🔍 Search!';
+      document.getElementById('locate-btn').textContent = '📍 Find Me!';
+    }
+  }
+
+  applyMode(isAdult);
+  btn.addEventListener('click', () => {
+    const nowAdult = !document.body.classList.contains('adult-mode');
+    localStorage.setItem('wes_adult', nowAdult ? '1' : '0');
+    applyMode(nowAdult);
+  });
+})();
+
 // All school-type amenity values for Overpass + Nominatim filtering
 const _EDU_TYPES = new Set([
   'school','university','college','kindergarten','library',
