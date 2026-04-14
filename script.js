@@ -351,35 +351,63 @@ locateBtn.addEventListener('click',()=>{
 
 async function searchCity(query) {
   show('loading');
+  if(!navigator.onLine){showError("You're offline 📵 Check your WiFi!");return;}
   try {
     const res=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`);
     const data=await res.json();
-    if(!data.results?.length) return showError(`Can't find "${query}" 🤔`);
+    if(!data.results?.length) return showError(`Can't find "${query}" 🤔 Try a bigger nearby city!`);
     const {latitude,longitude,name,country}=data.results[0];
     fetchWeather(latitude,longitude,name,country);
-  } catch {showError("Couldn't connect 🌐 Try again!");}
-}
+  } catch {showError("Couldn't connect 🌐 Try again!",0,0,query,'');}}
+
 
 async function fetchWeather(lat,lon,city,country) {
   show('loading');
   currentLat=lat; currentLon=lon; currentCity=city; currentCountry=country;
+
+  // Check internet first
+  if(!navigator.onLine) {
+    showError("You're offline 📵 Check your WiFi or data and try again!");
+    return;
+  }
+
+  // Fetch data (separate try/catch so render errors don't fake a network error)
+  let wx, aq;
   try {
-    const [wx, aq] = await Promise.all([
+    const controller = new AbortController();
+    const timeout = setTimeout(()=>controller.abort(), 10000);
+    [wx, aq] = await Promise.all([
       fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
         `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m,visibility,surface_pressure` +
         `&hourly=temperature_2m,apparent_temperature,weather_code,precipitation_probability,uv_index` +
         `&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max` +
-        `&temperature_unit=celsius&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=7`
+        `&temperature_unit=celsius&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=7`,
+        {signal:controller.signal}
       ).then(r=>r.json()),
       fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
         `&current=us_aqi,pm2_5,pm10,nitrogen_dioxide,ozone&timezone=auto`
       ).then(r=>r.json()).catch(()=>null),
     ]);
-    currentData=wx;
+    clearTimeout(timeout);
+    if(!wx?.current) throw new Error('Bad data');
+  } catch(e) {
+    const msg = e.name==='AbortError'
+      ? "Taking too long ⏱️ Check your internet and try again!"
+      : "Couldn't reach the weather servers 🌐 Try again in a moment!";
+    showError(msg, lat, lon, city, country);
+    return;
+  }
+
+  // Render (separate try/catch — display errors shouldn't hide the weather)
+  currentData = wx;
+  try {
     renderWeather(wx, city, country, aq);
-    fetchAlerts(lat, lon);
-    startRefresh(lat,lon,city,country);
-  } catch {showError("Couldn't get the weather 😢 Try again!");}
+  } catch(e) {
+    console.error('Render error:', e);
+    show('weather'); // still show something
+  }
+  fetchAlerts(lat, lon);
+  startRefresh(lat,lon,city,country);
 }
 
 // ── Alerts (NWS — US only) ──
@@ -736,7 +764,20 @@ function startRefresh(lat,lon,city,country) {
 function tick(){const m=Math.floor(countdown/60),s=countdown%60;refreshInfo.textContent=`🔄 ${m}:${String(s).padStart(2,'0')}`;}
 
 // ── Show/hide ──
-function showError(msg){errorMsg.textContent=msg;show('error');}
+function showError(msg, lat, lon, city, country) {
+  errorMsg.textContent = msg;
+  const existing = document.getElementById('retry-btn');
+  if (existing) existing.remove();
+  if (lat != null) {
+    const btn = document.createElement('button');
+    btn.id = 'retry-btn';
+    btn.textContent = '🔄 Try Again!';
+    btn.style.cssText = 'margin-top:14px;display:block;width:100%;background:#ff5252;color:white;border:none;border-radius:50px;padding:14px;font-family:Nunito,sans-serif;font-size:1rem;font-weight:900;cursor:pointer;box-shadow:0 5px 0 #b71c1c;';
+    btn.onclick = () => fetchWeather(lat, lon, city, country);
+    errorEl.appendChild(btn);
+  }
+  show('error');
+}
 function show(which){
   [loadingEl,errorEl,weatherEl].forEach(el=>el.classList.add('hidden'));
   if(which==='loading')loadingEl.classList.remove('hidden');
@@ -1230,7 +1271,7 @@ function renderFieldTrip(theme) {
   const packed = document.getElementById('fieldtrip-packed');
   if (!currentTripType) { intro.textContent = '👆 Pick your trip type above first!'; groups.innerHTML = ''; return; }
   const weatherItems = FT_WEATHER[theme] || FT_WEATHER.cloudy;
-  const tripExtra = FT_TRIP_EXTRAS[currentTripType];
+  const tripExtra = FT_TRIP_EXTRAS[currentTripType] || { label:'🎒 Trip Extras', tip:'', items:[] };
   const themeLabel = theme.charAt(0).toUpperCase() + theme.slice(1).replace('-',' ');
   const allGroups = [
     { label: '✅ Always Bring', items: FT_ALWAYS },
