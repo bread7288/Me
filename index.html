@@ -176,6 +176,20 @@
       <!-- FIELD TRIP -->
       <div class="section-head">🎒 Field Trip Packing List</div>
       <div class="fieldtrip-card" id="fieldtrip-card">
+
+        <!-- SCHOOL PICKER -->
+        <div class="ft-school-picker">
+          <div class="ft-trip-lbl">🏫 What school do you go to?</div>
+          <div class="ft-school-search-wrap">
+            <input type="text" id="school-search" class="ft-school-input" placeholder="Type your school name..." autocomplete="off" />
+            <div class="ft-school-dropdown hidden" id="school-dropdown"></div>
+          </div>
+          <div class="ft-school-selected hidden" id="ft-school-selected">
+            <span class="ft-school-badge" id="ft-school-badge"></span>
+            <button class="ft-school-clear" id="ft-school-clear">✕ Change</button>
+          </div>
+        </div>
+
         <div class="ft-trip-picker">
           <div class="ft-trip-lbl">Where are you going? 🗺️</div>
 

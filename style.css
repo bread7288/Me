@@ -153,6 +153,22 @@ body { font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 20px 14px 
 .ft-icon { font-size:1.4rem; flex-shrink:0; }
 .ft-text { font-weight:800; font-size:.95rem; color:#333; }
 .fieldtrip-packed { font-family:'Fredoka One',cursive; font-size:1.6rem; text-align:center; color:#4caf50; padding:16px; background:#e8f5e9; border-radius:18px; margin-top:16px; animation:popIn .4s cubic-bezier(.34,1.56,.64,1); }
+/* ─── SCHOOL PICKER ─── */
+.ft-school-picker { margin-bottom:20px; padding-bottom:18px; border-bottom:2px solid #eee; }
+.ft-school-search-wrap { position:relative; margin-top:10px; }
+.ft-school-input { width:100%; background:#f5f7ff; border:3px solid #dde3ff; border-radius:16px; padding:12px 18px; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; color:#333; outline:none; transition:border-color .2s; }
+.ft-school-input:focus { border-color:#7c4dff; }
+.ft-school-dropdown { position:absolute; top:calc(100% + 4px); left:0; right:0; background:white; border:3px solid #dde3ff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.12); z-index:100; max-height:260px; overflow-y:auto; }
+.ft-school-opt { padding:11px 16px; font-weight:800; font-size:.92rem; color:#333; cursor:pointer; border-bottom:1px solid #f0f0f0; transition:background .15s; }
+.ft-school-opt:last-child { border-bottom:none; }
+.ft-school-opt:hover, .ft-school-opt.highlighted { background:#eef2ff; color:#7c4dff; }
+.ft-school-opt .ft-school-match { color:#7c4dff; }
+.ft-school-opt.custom-opt { color:#4caf50; font-style:italic; }
+.ft-school-selected { display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap; }
+.ft-school-badge { background:linear-gradient(135deg,#7c4dff,#512da8); color:white; border-radius:50px; padding:8px 18px; font-weight:900; font-size:.95rem; display:flex; align-items:center; gap:8px; }
+.ft-school-clear { background:none; border:2px solid #dde3ff; border-radius:50px; padding:6px 14px; font-family:'Nunito',sans-serif; font-size:.82rem; font-weight:900; color:#90a4ae; cursor:pointer; transition:all .15s; }
+.ft-school-clear:hover { border-color:#e53935; color:#e53935; }
+
 .ft-trip-picker { margin-bottom:18px; }
 .ft-trip-lbl { font-family:'Fredoka One',cursive; font-size:1.1rem; color:#333; margin-bottom:12px; }
 .ft-cat-lbl { font-size:.75rem; font-weight:900; color:#90a4ae; text-transform:uppercase; letter-spacing:.8px; margin:12px 0 6px; }

@@ -744,6 +744,230 @@ function show(which){
   if(which==='weather')weatherEl.classList.remove('hidden');
 }
 
+// ── School Picker ──
+const ALL_SCHOOLS = [
+  // Pennsylvania Public Districts
+  'Abington School District, PA','Agora Cyber Charter School, PA','Albert Gallatin Area SD, PA',
+  'Allentown City School District, PA','Altoona Area School District, PA','Ambridge Area SD, PA',
+  'Annville-Cleona SD, PA','Armstrong School District, PA','Avon Grove SD, PA',
+  'Bald Eagle Area SD, PA','Baldwin-Whitehall SD, PA','Bangor Area SD, PA',
+  'Beaver Area SD, PA','Bellefonte Area SD, PA','Bensalem Township SD, PA',
+  'Berwick Area SD, PA','Bethel Park SD, PA','Bethlehem Area SD, PA',
+  'Big Spring SD, PA','Bloomsburg Area SD, PA','Blue Mountain SD, PA',
+  'Boyertown Area SD, PA','Bristol Township SD, PA','Brookville Area SD, PA',
+  'Butler Area SD, PA','Canon-McMillan SD, PA','Carbondale Area SD, PA',
+  'Carlisle Area SD, PA','Catasauqua Area SD, PA','Central Bucks SD, PA',
+  'Central Dauphin SD, PA','Chambersburg Area SD, PA','Chartiers Valley SD, PA',
+  'Cheltenham SD, PA','Chester-Upland SD, PA','Clarion Area SD, PA',
+  'Coatesville Area SD, PA','Conestoga Valley SD, PA','Connellsville Area SD, PA',
+  'Cornwall-Lebanon SD, PA','Council Rock SD, PA','Crawford Central SD, PA',
+  'Crestwood SD, PA','Cumberland Valley SD, PA','Dallas SD, PA',
+  'Daniel Boone Area SD, PA','Danville Area SD, PA','Downingtown Area SD, PA',
+  'Dubois Area SD, PA','East Penn SD, PA','East Stroudsburg Area SD, PA',
+  'Eastern Lancaster County SD, PA','Easton Area SD, PA','Elizabeth Forward SD, PA',
+  'Elizabethtown Area SD, PA','Ellwood City Area SD, PA','Ephrata Area SD, PA',
+  'Erie City SD, PA','Exeter Township SD, PA','Fleetwood Area SD, PA',
+  'Fox Chapel Area SD, PA','Franklin Area SD, PA','Freedom Area SD, PA',
+  'Garnet Valley SD, PA','Gateway SD, PA','Great Valley SD, PA',
+  'Greater Latrobe SD, PA','Greensburg Salem SD, PA','Grove City Area SD, PA',
+  'Hamburg Area SD, PA','Harrisburg City SD, PA','Hatboro-Horsham SD, PA',
+  'Haverford Township SD, PA','Hazleton Area SD, PA','Hempfield SD, PA',
+  'Hermitage SD, PA','Highlands SD, PA','Hollidaysburg Area SD, PA',
+  'Indiana Area SD, PA','Jersey Shore Area SD, PA','Jim Thorpe Area SD, PA',
+  'Juniata County SD, PA','Kennett Consolidated SD, PA','Kiski Area SD, PA',
+  'Kutztown Area SD, PA','Lake-Lehman SD, PA','Lampeter-Strasburg SD, PA',
+  'Lancaster SD, PA','Laurel Highlands SD, PA','Lebanon SD, PA',
+  'Lewisburg Area SD, PA','Ligonier Valley SD, PA','Lower Merion SD, PA',
+  'Lower Moreland Township SD, PA','Manheim Central SD, PA','Manheim Township SD, PA',
+  'Mars Area SD, PA','Marple Newtown SD, PA','Mckeesport Area SD, PA',
+  'Methacton SD, PA','Mifflin County SD, PA','Millcreek Township SD, PA',
+  'Milton Area SD, PA','Moshannon Valley SD, PA','Mount Lebanon SD, PA',
+  'Muhlenberg SD, PA','Nazareth Area SD, PA','Neshaminy SD, PA',
+  'New Castle Area SD, PA','North Allegheny SD, PA','North Penn SD, PA',
+  'Norristown Area SD, PA','Northampton Area SD, PA','Norwin SD, PA',
+  'Owen J Roberts SD, PA','Palmerton Area SD, PA','Parkland SD, PA',
+  'Pen Argyl Area SD, PA','Penn Hills SD, PA','Penn Manor SD, PA',
+  'Penn-Trafford SD, PA','Pennsbury SD, PA','Peters Township SD, PA',
+  'Philadelphia City SD, PA','Pine Grove Area SD, PA','Pine-Richland SD, PA',
+  'Pittsburgh Public Schools, PA','Pleasant Valley SD, PA','Plum Borough SD, PA',
+  'Pocono Mountain SD, PA','Pottsgrove SD, PA','Pottstown SD, PA',
+  'Pottsville Area SD, PA','Quakertown Community SD, PA','Radnor Township SD, PA',
+  'Reading SD, PA','Riverview SD, PA','Salisbury Township SD, PA',
+  'Scranton SD, PA','Selinsgrove Area SD, PA','Seneca Valley SD, PA',
+  'Shaler Area SD, PA','Shenango Area SD, PA','Shippensburg Area SD, PA',
+  'Slippery Rock Area SD, PA','Solanco SD, PA','Somerset Area SD, PA',
+  'Souderton Area SD, PA','South Fayette Township SD, PA','South Western SD, PA',
+  'Southern Lehigh SD, PA','Springfield SD (Delaware County), PA','Spring-Ford Area SD, PA',
+  'State College Area SD, PA','Steel Valley SD, PA','Stroudsburg Area SD, PA',
+  'Susquehanna Township SD, PA','Tamaqua Area SD, PA','Tredyffrin-Easttown SD, PA',
+  'Twin Valley SD, PA','Unionville-Chadds Ford SD, PA','Upper Darby SD, PA',
+  'Upper Dublin SD, PA','Upper Merion Area SD, PA','Upper Moreland Township SD, PA',
+  'Upper Perkiomen SD, PA','Upper St Clair SD, PA','Waynesboro Area SD, PA',
+  'West Allegheny SD, PA','West Chester Area SD, PA','West Jefferson Hills SD, PA',
+  'West Shore SD, PA','Western Wayne SD, PA','Whitehall-Coplay SD, PA',
+  'Wilkes-Barre Area SD, PA','William Penn SD, PA','Williamsport Area SD, PA',
+  'Wilson SD (Berks County), PA','Wilson Area SD (Northampton), PA','Wissahickon SD, PA',
+  'Woodland Hills SD, PA','Wyoming Area SD, PA','Wyoming Valley West SD, PA',
+  'York City SD, PA','York Suburban SD, PA',
+  // PA Private & Charter Schools
+  'Agora Cyber Charter, PA','Archbishop Carroll High School, PA','Archbishop Wood High School, PA',
+  'Baldwin School, PA','Cardinal O\'Hara High School, PA','Chestnut Hill Academy, PA',
+  'Devon Preparatory School, PA','Episcopal Academy, PA','Friends\' Central School, PA',
+  'Germantown Academy, PA','Germantown Friends School, PA','Gwynedd Mercy Academy, PA',
+  'Haverford School, PA','Holy Ghost Preparatory School, PA','La Salle College High School, PA',
+  'Malvern Preparatory School, PA','Merion Mercy Academy, PA','Methacton HS Charter School, PA',
+  'Notre Dame de Namur University School, PA','Pennsylvania Leadership Charter School, PA',
+  'Quaker Valley SD, PA','Roman Catholic High School, PA','Saint Joseph\'s Preparatory School, PA',
+  'Shipley School, PA','Villanova Preparatory School, PA',
+  // Famous PA Elementary Schools
+  'Albert M. Greenfield Elementary, Philadelphia PA','Anne Frank Elementary, Pittsburgh PA',
+  'Bache-Martin Elementary, Philadelphia PA','Barry Elementary, Philadelphia PA',
+  'Bryant Elementary, Philadelphia PA','Cayuga Elementary, Philadelphia PA',
+  'Clara Barton Elementary, Pittsburgh PA','Eleanor Roosevelt Elementary, PA',
+  'Franklin Learning Center, Philadelphia PA','Greenfield Elementary, Philadelphia PA',
+  'Hill Elementary School, State College PA','Houston Elementary, Philadelphia PA',
+  'Keystone Elementary, PA','Lawton Elementary, Philadelphia PA',
+  'Lincoln Elementary, Philadelphia PA','Logan Elementary, Philadelphia PA',
+  'Masterman School, Philadelphia PA','McCall Elementary, Philadelphia PA',
+  'Penn Alexander School, Philadelphia PA','Penrose Elementary, Philadelphia PA',
+  'Reynolds Elementary, Pittsburgh PA','Science Leadership Academy, Philadelphia PA',
+  'Shawmont Elementary, Philadelphia PA','Taggart Elementary, Philadelphia PA',
+  'Vare-Washington Elementary, Philadelphia PA','Washington Elementary, Allentown PA',
+  // Major US Districts (other states)
+  'New York City Department of Education, NY','Los Angeles Unified SD, CA',
+  'Chicago Public Schools, IL','Houston ISD, TX','Dallas ISD, TX',
+  'Miami-Dade County Public Schools, FL','Broward County Public Schools, FL',
+  'Clark County SD (Las Vegas), NV','Palm Beach County SD, FL','Hillsborough County SD, FL',
+  'Orange County Public Schools, FL','Gwinnett County Public Schools, GA',
+  'Wake County Public Schools, NC','Charlotte-Mecklenburg Schools, NC',
+  'Fairfax County Public Schools, VA','Prince George\'s County PS, MD',
+  'Montgomery County Public Schools, MD','Baltimore City Public Schools, MD',
+  'Boston Public Schools, MA','Detroit Public Schools, MI',
+  'Denver Public Schools, CO','Seattle Public Schools, WA',
+  'Portland Public Schools, OR','Minneapolis Public Schools, MN',
+  'Indianapolis Public Schools, IN','Columbus City Schools, OH',
+  'Cleveland Metropolitan SD, OH','Cincinnati Public Schools, OH',
+  'Nashville Metropolitan SD, TN','Memphis-Shelby County Schools, TN',
+  'Atlanta Public Schools, GA','Jefferson County Public Schools, KY (Louisville)',
+  'Phoenix Union High School District, AZ','Tucson Unified SD, AZ',
+  'San Diego Unified SD, CA','San Francisco Unified SD, CA',
+  'Sacramento City Unified SD, CA','Fresno Unified SD, CA',
+  'Long Beach Unified SD, CA','Oakland Unified SD, CA',
+  'San Jose Unified SD, CA','Elk Grove Unified SD, CA',
+  'Aurora Public Schools, CO','Jefferson County R-1 SD, CO (Denver area)',
+  'St. Louis Public Schools, MO','Kansas City Public Schools, MO',
+  'Omaha Public Schools, NE','New Orleans Public Schools, LA',
+  'Baton Rouge EBR Parish Schools, LA','Albuquerque Public Schools, NM',
+  'Salt Lake City SD, UT','Granite SD, UT','Jordan SD, UT',
+  'Anchorage SD, AK','Honolulu DOE, HI',
+  'Guilford County Schools, NC','Forsyth County Schools, NC',
+  'Durham Public Schools, NC','Raleigh Wake County, NC',
+  'Berkeley County SD, SC','Richland One SD, SC','Greenville County Schools, SC',
+  'Knox County Schools, TN','Knox County Public Schools, TN',
+  'Jefferson County SD, AL (Birmingham)','Mobile County Public Schools, AL',
+  'Tulsa Public Schools, OK','Oklahoma City Public Schools, OK',
+  'Little Rock School District, AR','St. Paul Public Schools, MN',
+  'Richmond Public Schools, VA','Virginia Beach City Public Schools, VA',
+  'Norfolk Public Schools, VA','Chesterfield County Public Schools, VA',
+  'Loudoun County Public Schools, VA','Alexandria City Public Schools, VA',
+  'Arlington Public Schools, VA',
+  // Generic school names for small towns
+  'Lincoln Elementary School','Washington Elementary School','Jefferson Elementary School',
+  'Roosevelt Elementary School','Kennedy Elementary School','Adams Elementary School',
+  'Madison Elementary School','Monroe Elementary School','Jackson Elementary School',
+  'Franklin Elementary School','Grant Elementary School','Eisenhower Elementary School',
+  'Wilson Elementary School','Harrison Elementary School','Tyler Elementary School',
+  'Polk Elementary School','Taylor Elementary School','Fillmore Elementary School',
+  'Pierce Elementary School','Buchanan Elementary School','Johnson Elementary School',
+  'Cleveland Elementary School','McKinley Elementary School','Taft Elementary School',
+  'Harding Elementary School','Coolidge Elementary School','Hoover Elementary School',
+  'Truman Elementary School','Dwight D. Eisenhower Elementary','Nixon Elementary School',
+  'Ford Elementary School','Carter Elementary School','Reagan Elementary School',
+  'Martin Luther King Jr. Elementary','Rosa Parks Elementary School',
+  'Abraham Lincoln Elementary','George Washington Elementary','Benjamin Franklin Elementary',
+  'Thomas Jefferson Elementary','Frederick Douglass Elementary','Harriet Tubman Elementary',
+  'Sojourner Truth Elementary','Cesar Chavez Elementary School','Maya Angelou Elementary',
+  'Oak Grove Elementary','Maple Grove Elementary','Pine Ridge Elementary',
+  'Riverside Elementary','Hillside Elementary','Valley View Elementary',
+  'Lakewood Elementary','Crestview Elementary','Parkview Elementary',
+  'Greenwood Elementary','Westwood Elementary','Eastwood Elementary',
+  'Northwood Elementary','Southwood Elementary','Maplewood Elementary',
+  'Cedarwood Elementary','Elmwood Elementary','Birchwood Elementary',
+  'Cherry Hill Elementary','Sunnybrook Elementary','Spring Valley Elementary',
+  'Autumn Ridge Elementary','Mountain View Elementary','Ocean View Elementary',
+  'Forest Glen Elementary','Meadowbrook Elementary','Rolling Hills Elementary',
+  'Pleasant Hill Elementary','Happy Hollow Elementary','Clear Creek Elementary',
+  'Blue Ridge Elementary','Silver Lake Elementary','Golden Gate Elementary',
+  'Sunrise Elementary','Sunset Elementary','Moonrise Elementary',
+  'Star Valley Elementary','Rainbow Elementary','Thunderbird Elementary',
+  'Eagle Ridge Elementary','Falcon Ridge Elementary','Hawk Ridge Elementary',
+  'Owl Creek Elementary','Fox Run Elementary','Deer Run Elementary',
+  'Beaver Creek Elementary','Otter Creek Elementary','Wolf Creek Elementary',
+];
+
+let selectedSchool = localStorage.getItem('wes_school') || '';
+
+function initSchoolPicker() {
+  const input = document.getElementById('school-search');
+  const dropdown = document.getElementById('school-dropdown');
+  const selectedEl = document.getElementById('ft-school-selected');
+  const badgeEl = document.getElementById('ft-school-badge');
+
+  function showSelected(name) {
+    selectedSchool = name;
+    localStorage.setItem('wes_school', name);
+    input.value = '';
+    dropdown.classList.add('hidden');
+    badgeEl.textContent = '🏫 ' + name;
+    selectedEl.classList.remove('hidden');
+    input.closest('.ft-school-search-wrap').style.display = 'none';
+  }
+
+  if (selectedSchool) showSelected(selectedSchool);
+
+  document.getElementById('ft-school-clear').addEventListener('click', () => {
+    selectedSchool = '';
+    localStorage.removeItem('wes_school');
+    selectedEl.classList.add('hidden');
+    input.closest('.ft-school-search-wrap').style.display = '';
+    input.value = '';
+    input.focus();
+  });
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    dropdown.innerHTML = '';
+    if (!q) { dropdown.classList.add('hidden'); return; }
+    const matches = ALL_SCHOOLS.filter(s => s.toLowerCase().includes(q)).slice(0, 10);
+    if (matches.length) {
+      matches.forEach(school => {
+        const div = document.createElement('div');
+        div.className = 'ft-school-opt';
+        const idx = school.toLowerCase().indexOf(q);
+        div.innerHTML = school.slice(0,idx) + `<span class="ft-school-match">${school.slice(idx,idx+q.length)}</span>` + school.slice(idx+q.length);
+        div.addEventListener('click', () => showSelected(school));
+        dropdown.appendChild(div);
+      });
+    }
+    const custom = document.createElement('div');
+    custom.className = 'ft-school-opt custom-opt';
+    custom.textContent = `✏️ Use "${input.value.trim()}"`;
+    custom.addEventListener('click', () => showSelected(input.value.trim()));
+    dropdown.appendChild(custom);
+    dropdown.classList.remove('hidden');
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && input.value.trim()) showSelected(input.value.trim());
+    if (e.key === 'Escape') dropdown.classList.add('hidden');
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.ft-school-search-wrap')) dropdown.classList.add('hidden');
+  });
+}
+initSchoolPicker();
+
 // ── Collapsible Sections ──
 (function initCollapsible() {
   const saved = JSON.parse(localStorage.getItem('wes_collapsed') || '{}');
@@ -1013,7 +1237,9 @@ function renderFieldTrip(theme) {
     { label: `${MASCOTS[theme]||'🌤️'} For Today's ${themeLabel} Weather`, items: weatherItems },
     { label: tripExtra.label, items: tripExtra.items, tip: tripExtra.tip },
   ];
-  intro.textContent = 'Tap each item to check it off your list!';
+  intro.textContent = selectedSchool
+    ? `🏫 ${selectedSchool} — tap each item to check it off!`
+    : 'Tap each item to check it off your list!';
   groups.innerHTML = '';
   let totalItems = 0, checkedItems = 0;
   allGroups.forEach(group => {
