@@ -2420,7 +2420,7 @@ function createNoiseSource(ctx, freq, type, volume) {
     await loadLeaflet();
     if(!window.L){ if(loadingEl) loadingEl.textContent='⚠️ Map failed to load — check your internet connection.'; return; }
 
-    mapObj=L.map('worldmap-container',{center:[20,0],zoom:2,minZoom:2,maxZoom:13});
+    mapObj=L.map('worldmap-container',{center:[20,0],zoom:2,minZoom:2,maxZoom:13,scrollWheelZoom:false});
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
       attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:19
     }).addTo(mapObj);
