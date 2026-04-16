@@ -381,7 +381,7 @@ async function fetchWeather(lat,lon,city,country) {
         `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m,visibility,surface_pressure` +
         `&hourly=temperature_2m,apparent_temperature,weather_code,precipitation_probability,uv_index` +
         `&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max` +
-        `&temperature_unit=celsius&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=7`,
+        `&temperature_unit=celsius&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=7&models=best_match`,
         {signal:controller.signal}
       ).then(r=>r.json()),
       fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
@@ -1465,7 +1465,7 @@ const FT_WEATHER = {
 };
 const FT_TRIP_EXTRAS = {
   // ── Farms ──
-  farm:         { label:'🐄 Farm Extras', tip:'🚜 Bared Farm tips: Wear clothes you don\'t mind getting muddy! Be gentle with animals and don\'t feed them unless a farmer says okay!', items:[['👟','OLD shoes — it WILL get muddy!'],['👖','Old clothes you can get dirty'],['🧤','Gloves for touching animals'],['🤧','Allergy medicine (hay & animals!)'],['🧴','Hand sanitizer — wash up after animals!'],['📸','Ask your teacher for animal photos!'],['👃','FYI — farms smell funny! 😄'],['🥕','No outside animal food']] },
+  farm:         { label:'🐄 Farm Extras', tip:'🚜 Farm tips: Wear clothes you don\'t mind getting muddy! Be gentle with animals and don\'t feed them unless a farmer says okay!', items:[['👟','OLD shoes — it WILL get muddy!'],['👖','Old clothes you can get dirty'],['🧤','Gloves for touching animals'],['🤧','Allergy medicine (hay & animals!)'],['🧴','Hand sanitizer — wash up after animals!'],['📸','Ask your teacher for animal photos!'],['👃','FYI — farms smell funny! 😄'],['🥕','No outside animal food']] },
   orchard:      { label:'🍎 Apple Orchard Extras', tip:'🍎 Orchard tips: Don\'t eat apples straight off the tree until they\'re washed! The best apples are higher up — a picker stick helps!', items:[['🧺','Bag or basket for picking apples'],['🧥','Comfy layers — orchards can be breezy'],['👟','Closed-toe shoes for uneven ground'],['🍎','Leave space in your backpack for apples!'],['📸','Ask your teacher to take a photo!']] },
   pumpkin:      { label:'🎃 Pumpkin Patch Extras', tip:'🎃 Pumpkin tips: The heavier the pumpkin the harder to carry! Bring a bag or wagon. Fields can be muddy!', items:[['👟','Boots or old shoes (muddy fields!)'],['🧤','Gloves — pumpkin stems are scratchy'],['🛍️','Big bag to carry your pumpkin'],['📸','Ask your teacher for a photo — great photo spot!'],['🌾','Watch out for hay and mud']] },
   berry:        { label:'🍓 Berry Farm Extras', tip:'🍓 Berry tips: Don\'t eat berries until washed! Pick gently — berries bruise easily. Wear clothes you don\'t mind staining!', items:[['👚','Clothes you don\'t mind staining (berries are juicy!)'],['🧺','Picking container'],['👟','Old shoes — ground can be muddy'],['🧴','Sunscreen (you\'ll be bending over a lot!)'],['🫧','Extra napkins or wipes']] },
@@ -1740,7 +1740,7 @@ document.querySelectorAll('.ft-trip-btn').forEach(btn => {
   });
 });
 // Pre-select farm since that's Wes's trip!
-document.querySelector('.ft-trip-btn[data-trip="farm"]').classList.add('active');
+document.querySelector('.ft-trip-btn[data-trip="farm"]')?.classList.add('active');
 
 // ── Clickable Mascot ──
 const MASCOT_SAYINGS = {
@@ -1780,6 +1780,11 @@ document.getElementById('thunder-btn').addEventListener('click', () => {
   else if (miles < 6) msg = `🟡 ${miles} miles (${km} km) — Moderate distance.`;
   else msg = `🟢 ${miles} miles (${km} km) — Far away! But stay alert.`;
   document.getElementById('storm-result').textContent = msg;
+  document.getElementById('thunder-btn').disabled = true;
+  lightningTime = null;
+});
+document.getElementById('same-time-btn').addEventListener('click', () => {
+  document.getElementById('storm-result').textContent = '🔴 Very near — The storm is extremely close! Take shelter immediately!';
   document.getElementById('thunder-btn').disabled = true;
   lightningTime = null;
 });
@@ -1823,6 +1828,68 @@ document.getElementById('uv-start-btn').addEventListener('click', () => {
 });
 
 // ── Temperature Lab ──
+// Milestones sorted highest → lowest (°C). We find the first one ≤ the entered temp.
+const CONV_MILESTONES = [
+  { c:15000000, emoji:'🌟', label:'Core of the Sun (15,000,000°C)',        note:'Nuclear fusion at this temperature is what powers every living thing on Earth. Hydrogen atoms fuse into helium, releasing mind-boggling energy.' },
+  { c:30000,    emoji:'⚡', label:'Lightning bolt (~30,000°C)',             note:'A lightning bolt is FIVE TIMES hotter than the surface of the Sun! It superheats the surrounding air in microseconds — that\'s the thunder crack.' },
+  { c:5500,     emoji:'☀️', label:'Surface of the Sun (~5,500°C)',          note:'The Sun\'s outer layer is hot enough to instantly vaporize any metal or rock. This energy takes 100,000 years to travel from the core to here.' },
+  { c:3422,     emoji:'🔩', label:'Tungsten melts (3,422°C)',               note:'Tungsten has the highest melting point of any pure element. It\'s used in rocket nozzles, X-ray tubes, and light bulb filaments.' },
+  { c:2862,     emoji:'🌋', label:'Hottest lava on Earth (~2,862°C)',       note:'Komatiite lava — the hottest type, mostly found as ancient rock now. Modern lava is typically much cooler at 700–1,200°C.' },
+  { c:2000,     emoji:'💡', label:'Incandescent light bulb filament',       note:'Old-style light bulbs had tungsten filaments glowing at 2,000–3,300°C. That\'s why they got burning hot to touch and wasted so much energy!' },
+  { c:1538,     emoji:'⚙️', label:'Iron melts (1,538°C)',                   note:'Blast furnaces run at this temperature to produce steel. The Eiffel Tower (10,000 tons of iron) would be liquid puddles here.' },
+  { c:1414,     emoji:'💻', label:'Silicon melts (1,414°C)',                note:'Every computer chip, phone processor, and solar panel is made of silicon. They\'re grown as perfect crystals from molten silicon at this temp!' },
+  { c:1085,     emoji:'🔌', label:'Copper melts (1,085°C)',                 note:'Copper is in almost all electrical wiring. A serious house fire can literally melt the wiring inside your walls and cause total electrical failure.' },
+  { c:1000,     emoji:'🫧', label:'Glass melts (~1,000°C)',                 note:'Glassblowers use furnaces at 1,000–1,200°C to shape molten glass into art. The sand (silica) in your windows was melted to make them!' },
+  { c:900,      emoji:'🟠', label:'Steel glows orange-hot',                 note:'Blacksmiths shape steel at 900–1,100°C when it glows bright orange. A yellow glow means even hotter — closer to 1,100°C.' },
+  { c:660,      emoji:'🥫', label:'Aluminum melts (660°C)',                 note:'Your soda can would melt here. Aluminum\'s low melting point makes it easy to recycle — melting it uses only 5% of the energy needed to mine new aluminum!' },
+  { c:650,      emoji:'🔴', label:'Metal glows dull red',                   note:'Any iron or steel starts glowing a dull red around 650°C. This is the visual indicator blacksmiths use to know the metal is workable.' },
+  { c:430,      emoji:'🍕', label:'Wood-fired pizza oven (430°C+)',          note:'Authentic Neapolitan pizza MUST be cooked at 430°C+. It cooks in just 60–90 seconds! Your home oven maxes out at about 260°C.' },
+  { c:327,      emoji:'🔋', label:'Lead melts (327°C)',                     note:'Old water pipes and car batteries were made of lead. Its low melting point made it easy to work with, but it\'s highly toxic — that\'s why we stopped!' },
+  { c:300,      emoji:'🔥', label:'Campfire / wood ignition (~300°C)',       note:'Wood ignites at around 300°C. A roaring campfire reaches 600°C in the center. This is why you can toast a marshmallow just above the flames.' },
+  { c:245,      emoji:'🥃', label:'Self-cleaning oven cycle',               note:'Oven self-clean mode reaches 245–315°C to incinerate food residue into ash. Don\'t touch the outside of the oven door during this cycle!' },
+  { c:233,      emoji:'🍬', label:'Sugar caramelizes (233°C)',              note:'At 233°C sugar molecules break apart and reform into hundreds of new flavor compounds — that\'s caramel! Also "Fahrenheit 451" — paper\'s combustion temp.' },
+  { c:205,      emoji:'🍳', label:'Stir-fry / wok cooking',                note:'A properly seasoned wok gets to 200–230°C. The intense heat creates "wok hei" — the slightly smoky, charred flavor you can\'t replicate at home.' },
+  { c:190,      emoji:'🍟', label:'Deep frying (175–190°C)',                note:'Perfect French fry temperature! Too cool = soggy and oily. Too hot = burned outside, raw inside. 175–190°C creates the golden, crispy exterior.' },
+  { c:180,      emoji:'🍞', label:'Bread baking (180–220°C)',               note:'Bread bakes at 180–220°C. The crust browns because the outside hits 180°C while the inside stays at ~96°C — two very different temperature zones!' },
+  { c:165,      emoji:'🍪', label:'Cookie baking (165–175°C)',              note:'The Maillard reaction (browning) kicks in around 140°C. Cookies and muffins get their golden color and hundreds of flavor compounds here!' },
+  { c:150,      emoji:'🧁', label:'Cupcake / muffin baking',               note:'Cupcakes and muffins bake at 150–180°C. The baking powder releases CO₂ bubbles when heated, making them fluffy and light.' },
+  { c:121,      emoji:'🏥', label:'Autoclave / pressure cooker (121°C)',    note:'Hospitals sterilize surgical instruments at 121°C under pressure — kills ALL bacteria and viruses. Pressure cookers use this to cook food 70% faster!' },
+  { c:100,      emoji:'♨️', label:'Water boils! (100°C / 212°F)',          note:'At sea level, water boils at exactly 100°C. On Mount Everest (8,849m), it boils at only 70°C — food takes much longer to cook up there!' },
+  { c:90,       emoji:'☕', label:'Coffee brewing temperature',             note:'Coffee experts brew at 90–96°C — just below boiling. Too hot burns the grounds and creates bitter flavors. Cold brew uses room temperature instead!' },
+  { c:82,       emoji:'🍵', label:'Perfect tea zone (70–90°C)',            note:'Boiling water is actually too HOT for fine teas — it scorches the leaves! Green tea needs 70°C, black tea 82–90°C for the best flavor.' },
+  { c:74,       emoji:'🍗', label:'USDA safe cooked chicken (74°C / 165°F)',note:'165°F / 74°C is the minimum safe internal temperature for poultry. Below this, dangerous Salmonella bacteria can survive. Always check with a thermometer!' },
+  { c:72,       emoji:'🥛', label:'Pasteurization (72°C)',                 note:'Milk heated to 72°C for 15 seconds kills harmful bacteria. Louis Pasteur discovered this in 1864. This simple process has saved hundreds of millions of lives!' },
+  { c:63,       emoji:'🥚', label:'Perfect soft-boiled egg (63°C)',         note:'Egg whites set around 60°C, yolks around 70°C. Cooking at exactly 63°C for 45+ minutes gives a silky white and perfectly jammy, runny yolk.' },
+  { c:60,       emoji:'🤚', label:'Too hot to touch (60°C)',               note:'Skin burns in under a second at 60°C. Car interiors and dashboards reach this on hot summer days — never leave animals or children in a parked car!' },
+  { c:56,       emoji:'📋', label:'Hottest air temp ever (Furnace Creek)',  note:'54.4°C recorded at Furnace Creek, Death Valley, CA in August 2020 — the highest reliably measured air temperature in recorded history.' },
+  { c:50,       emoji:'🏜️', label:'Extreme heat / desert air (50°C)',     note:'Ground surfaces in the Sahara can reach 80°C — hot enough to fry an egg! Shade provides little relief when air itself is this hot.' },
+  { c:45,       emoji:'🌵', label:'Dangerous heatwave (45°C)',             note:'Outdoor workers face life-threatening heat exhaustion. Even fit people can collapse. Cities issue heat emergency orders above 40–45°C.' },
+  { c:40,       emoji:'🌡️', label:'Severe heatwave (40°C / 104°F)',        note:'The human body struggles to cool itself above 40°C. Thousands die in extreme heat events every year. This is when hospitals overflow.' },
+  { c:37,       emoji:'🫀', label:'Human body temperature (37°C / 98.6°F)',note:'Your core is ALWAYS 37°C — day, night, sick or healthy. If it rises to 40°C you have a dangerous fever. Above 42°C is often fatal.' },
+  { c:35,       emoji:'🏊', label:'Warm pool / bath water (~35°C)',        note:'Comfortable for swimming. Olympic pools are kept at 25–28°C. Hot tubs are 37–40°C. The Dead Sea stays around 35°C year-round.' },
+  { c:28,       emoji:'☀️', label:'Hot summer day (28°C / 82°F)',          note:'Pool and ice cream weather! SPF sunscreen really matters now. The tropical ocean surface hovers around 28–30°C year-round.' },
+  { c:25,       emoji:'😎', label:'Warm/classic summer day (25°C / 77°F)', note:'Ideal outdoor temperature for most sports and activities. Studies rank 22–25°C as the temperature range people report the most happiness!' },
+  { c:21,       emoji:'🎯', label:'The Goldilocks temperature (21°C)',      note:'Science says 21°C is the temperature at which humans are most productive, alert, and comfortable. Not too hot, not too cold — just right!' },
+  { c:20,       emoji:'😊', label:'Room temperature (20°C / 68°F)',         note:'The global scientific standard for "room temperature." All chemistry experiments run at 20°C for consistency. Your fridge is about 4°C.' },
+  { c:15,       emoji:'🌤️', label:'Mild day / average Earth surface (15°C)',note:'The average temperature of Earth\'s ENTIRE surface is 15°C. Mars averages −60°C. Venus averages 465°C. We got really lucky!' },
+  { c:10,       emoji:'🍂', label:'Cool autumn day (10°C / 50°F)',         note:'Most plants stop growing below 10°C. Trees start dropping leaves. You need a jacket! This is the threshold for meteorological "heating degree days."' },
+  { c:4,        emoji:'🌧️', label:'Rain/snow boundary + water density peak',note:'Above 4°C: rain. Below: snow or sleet. At exactly 4°C, water reaches its MAXIMUM density — that\'s why deep lakes stay liquid underneath ice!' },
+  { c:0,        emoji:'💧', label:'Freezing point of water (0°C / 32°F)',  note:'Pure water freezes at 0°C. Salt water freezes at −2°C (why we salt icy roads!). Water can remain liquid well below 0°C if it\'s very pure — called supercooling.' },
+  { c:-5,       emoji:'🌨️', label:'Frosty conditions (−5°C / 23°F)',      note:'Roads ice over. The water in soil freezes, causing "frost heave" — sidewalks and roads crack and buckle from the pressure of expanding ice.' },
+  { c:-10,      emoji:'❄️', label:'Cold winter day (−10°C / 14°F)',        note:'Snow squeaks loudly when you walk on it below −10°C. Snowflakes form their most perfect, elaborate six-sided crystals at around −10 to −15°C.' },
+  { c:-20,      emoji:'❄️', label:'Very cold winter (−20°C / −4°F)',       note:'Bubbles blown outside freeze solid mid-air. Your breath crackles and freezes into tiny crystals. Diesel fuel gels and cars are hard to start.' },
+  { c:-29,      emoji:'🥶', label:'Frostbite territory (−29°C / −20°F)',   note:'Exposed skin can freeze in under 30 minutes. Windchill makes it feel even colder. This is a common winter temperature in Canada and the northern US.' },
+  { c:-40,      emoji:'🥶', label:'−40°: Same in °C AND °F!',              note:'The ONLY temperature where both Celsius and Fahrenheit give the same number: −40°C = −40°F. Cars refuse to start. Metal becomes dangerously brittle.' },
+  { c:-55,      emoji:'✈️', label:'Outside your airplane window (−55°C)',  note:'The air just outside the window of every commercial flight is this cold. One reason airplane windows have that tiny hole — it manages air pressure!' },
+  { c:-70,      emoji:'🏔️', label:'Siberian record cold (−67.8°C)',        note:'Oymyakon, Russia: the coldest permanently inhabited town on Earth. Throw a cup of boiling water in the air and it turns to snow before hitting the ground.' },
+  { c:-89,      emoji:'🥶', label:'Coldest ever on Earth (−89.2°C)',        note:'Vostok Station, Antarctica (July 21, 1983). Exposed skin freezes in seconds. Even inside clothing, warmth lasts only minutes without shelter.' },
+  { c:-130,     emoji:'🌬️', label:'Air begins to liquefy (−130°C)',        note:'At −130°C, the gases in ordinary air (nitrogen, oxygen) start turning into liquid. Industrial "air separation" uses cold to split air into pure gases.' },
+  { c:-183,     emoji:'💧', label:'Liquid oxygen (−183°C)',                note:'Oxygen turns into a pale blue liquid. Incredibly dangerous — it makes fuels explode far more powerfully. Liquid oxygen fuels rockets and hospitals.' },
+  { c:-196,     emoji:'🧊', label:'Liquid nitrogen (−196°C)',              note:'Instantly freezes almost anything it touches. Used to preserve cells, embryos, and vaccines. Also used to make expensive ice cream at fancy restaurants!' },
+  { c:-270,     emoji:'🔵', label:'Liquid helium (−270°C / 3 K)',          note:'Used in MRI machines and quantum computers. Metals become superconductors here — electricity flows with literally ZERO resistance.' },
+  { c:-273.15,  emoji:'🌌', label:'Absolute Zero (−273.15°C / 0 K)',       note:'The coldest possible temperature in the universe. Atoms completely stop moving. Scientists have gotten within billionths of a degree — but never quite there.' },
+];
+
 let convFrom = 'F';
 document.querySelectorAll('.conv-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1835,25 +1902,28 @@ document.querySelectorAll('.conv-btn').forEach(btn => {
 document.getElementById('conv-input').addEventListener('input', doConvert);
 function doConvert() {
   const val = parseFloat(document.getElementById('conv-input').value);
-  let fEl = document.getElementById('conv-f'), cEl = document.getElementById('conv-c'), kEl = document.getElementById('conv-k'), dEl = document.getElementById('conv-desc');
-  if (isNaN(val)) { [fEl, cEl, kEl, dEl].forEach(el => el.textContent = ''); return; }
+  const fEl = document.getElementById('conv-f');
+  const cEl = document.getElementById('conv-c');
+  const kEl = document.getElementById('conv-k');
+  const dEl = document.getElementById('conv-desc');
+  if (isNaN(val)) { [fEl,cEl,kEl,dEl].forEach(el=>el.innerHTML=''); return; }
   let c, f, k;
-  if (convFrom === 'F') { f = val; c = (f - 32) * 5/9; k = c + 273.15; }
-  else if (convFrom === 'C') { c = val; f = c * 9/5 + 32; k = c + 273.15; }
-  else { k = val; c = k - 273.15; f = c * 9/5 + 32; }
-  fEl.textContent = `🇺🇸 ${f.toFixed(1)}°F`;
-  cEl.textContent = `🌍 ${c.toFixed(1)}°C`;
-  kEl.textContent = `🔬 ${k.toFixed(1)} K`;
-  let desc = '';
-  if (f >= 212) desc = '♨️ Boiling water!';
-  else if (f >= 100) desc = '🥵 Dangerously hot!';
-  else if (f >= 90) desc = '🔥 Super hot day!';
-  else if (f >= 75) desc = '😊 Nice and warm!';
-  else if (f >= 60) desc = '🙂 Comfortable!';
-  else if (f >= 32) desc = '🧥 Cold! Wear a coat!';
-  else if (f >= 0) desc = '🥶 Very freezing!';
-  else desc = '❄️ Extreme cold!';
-  dEl.textContent = desc;
+  if (convFrom==='F')      { f=val; c=(f-32)*5/9;  k=c+273.15; }
+  else if (convFrom==='C') { c=val; f=c*9/5+32;    k=c+273.15; }
+  else                     { k=val; c=k-273.15;    f=c*9/5+32; }
+  const fmt = n => Math.abs(n)>=10000
+    ? n.toLocaleString('en-US',{maximumFractionDigits:0})
+    : n.toFixed(1);
+  fEl.textContent = `🇺🇸 ${fmt(f)}°F`;
+  cEl.textContent = `🌍 ${fmt(c)}°C`;
+  kEl.textContent = `🔬 ${Math.max(0,k).toFixed(2)} K`;
+
+  // Find the milestone range this temperature falls in
+  let m = CONV_MILESTONES[CONV_MILESTONES.length - 1];
+  for (const milestone of CONV_MILESTONES) {
+    if (c >= milestone.c) { m = milestone; break; }
+  }
+  dEl.textContent = `${m.emoji} ${m.label}`;
 }
 
 // ── City Compare ──
@@ -2017,21 +2087,69 @@ document.getElementById('slot-spin').addEventListener('click', () => {
   }, 1300);
 });
 
-// ── Precipitation Slider ──
+// ── Temperature Explorer ──
+const TEMP_STAGES = [
+  { c:-273, icon:'🌌', label:'Absolute Zero',            info:'The coldest possible temperature — atoms stop moving completely. Nothing in the universe can ever be colder than this!' },
+  { c:-270, icon:'🔵', label:'Liquid Helium',            info:'Used in MRI machines and quantum computers! Metals become superconductors here — electricity flows with ZERO resistance.' },
+  { c:-200, icon:'💧', label:'Liquid Nitrogen',          info:'Instantly freezes almost anything it touches. Used to preserve cells, freeze warts off, and make crazy liquid-nitrogen ice cream!' },
+  { c:-183, icon:'🌬️', label:'Liquid Oxygen',           info:'Oxygen gas turns into a pale blue liquid! Incredibly dangerous — it makes fuels explode far more violently than normal.' },
+  { c:-130, icon:'🌬️', label:'Air Starts to Liquefy',   info:'At this temperature, the gases in normal air begin turning into liquid. Liquid air is used in industrial processes worldwide.' },
+  { c:-89,  icon:'🥶', label:'Coldest on Earth EVER',    info:'Vostok Station, Antarctica (1983): −89.2°C — the coldest temperature ever recorded on Earth. Exposed skin freezes in seconds!' },
+  { c:-70,  icon:'🏔️', label:'Siberian Record Cold',    info:'Oymyakon, Russia — the coldest permanently inhabited town. Rubber tires shatter. Toss boiling water in the air: it becomes snow!' },
+  { c:-55,  icon:'✈️', label:'Outside an Airplane',      info:'The air just outside your airplane window is this cold every single flight! One reason planes need super-insulated windows.' },
+  { c:-40,  icon:'🥶', label:'−40: The Magic Number',    info:'−40°C = exactly −40°F — the ONLY temperature where Celsius and Fahrenheit are the same! Cars won\'t start; metal becomes brittle.' },
+  { c:-30,  icon:'❄️', label:'Extreme Cold',             info:'Frostbite can occur in under 10 minutes. Eyelashes freeze together. Bubbles blown outside freeze solid mid-air!' },
+  { c:-20,  icon:'❄️', label:'Very Cold Winter',         info:'Snow squeaks loudly when you walk on it here. Your breath freezes before you finish exhaling. Great for dry-powder skiing!' },
+  { c:-10,  icon:'❄️', label:'Cold Winter Day',          info:'Snow doesn\'t melt, lakes freeze solid. Snowflakes form their most perfect hexagonal crystals at around −10°C.' },
+  { c:-5,   icon:'🌨️', label:'Frosty',                  info:'Wet snow and icy roads. Water in the soil freezes, causing frost heaving — roads crack and sidewalks buckle from ice pressure!' },
+  { c:0,    icon:'💧', label:'Freezing Point of Water',  info:'The magic line between liquid and ice! Fun fact: water can actually stay liquid BELOW 0°C (supercooled) if it\'s pure and undisturbed.' },
+  { c:4,    icon:'🌧️', label:'Rain Forms',               info:'Above 4°C, precipitation falls as rain. Also the temperature where water is DENSEST — why deep lakes don\'t freeze solid all the way down!' },
+  { c:10,   icon:'🍂', label:'Cool Autumn Day',          info:'Jacket required! Trees start dropping leaves around 10°C. Most plants stop growing below this temperature. Perfect hiking weather!' },
+  { c:15,   icon:'🌤️', label:'Mild Day',                info:'Light jacket weather. The average surface temperature of the entire Earth is 15°C. Comfortable for a park walk or bike ride!' },
+  { c:20,   icon:'😊', label:'Room Temperature',         info:'The global standard "comfortable" temperature. All lab experiments use 20°C as baseline. Air conditioners worldwide target this!' },
+  { c:21,   icon:'🎯', label:'Perfect Temperature!',     info:'Studies show 21°C is where humans are most productive AND comfortable. Scientists call it the "Goldilocks temperature" for people!' },
+  { c:28,   icon:'☀️', label:'Warm Summer Day',          info:'Pool weather! SPF sunscreen really matters now. The ocean surface in the tropics stays around 28°C year-round.' },
+  { c:37,   icon:'🫀', label:'Human Body Temperature',   info:'Your blood is ALWAYS 37°C (98.6°F). If it rises just 3°C to 40°C, you have a dangerous fever. Your body works incredibly hard to stay at 37°C!' },
+  { c:40,   icon:'🌡️', label:'Dangerous Heatwave',      info:'Outdoor exercise becomes unsafe. The human body struggles to cool itself. Thousands die in extreme heat waves every year worldwide.' },
+  { c:45,   icon:'🏜️', label:'Extreme Desert Heat',     info:'Parts of the Sahara and Arabian Peninsula reach this in summer. The GROUND surface can hit 80°C — hot enough to fry an egg!' },
+  { c:56,   icon:'📋', label:'Hottest Air Temp on Earth',info:'Furnace Creek, Death Valley, CA recorded 54.4°C in 2020 — the hottest air temperature ever officially measured on our planet!' },
+  { c:60,   icon:'🤚', label:'Too Hot to Touch',         info:'Car interiors reach this on hot days. Skin burns in under a second. This is why dashboard fires happen in desert climates.' },
+  { c:72,   icon:'🥛', label:'Pasteurization',           info:'Milk is heated to 72°C for 15 seconds to kill bacteria — invented by Louis Pasteur in 1864. This simple process saves millions of lives yearly!' },
+  { c:82,   icon:'🍵', label:'Perfect Tea Temperature',  info:'Boiling water is actually too HOT for fine teas — it burns the leaves! Green tea needs 70°C, black tea 82–90°C for best flavor.' },
+  { c:100,  icon:'♨️', label:'Water Boils!',             info:'At sea level, water boils at exactly 100°C. On Mount Everest\'s summit (8,849m), it boils at only 70°C — cooking food takes much longer!' },
+  { c:121,  icon:'🏥', label:'Pressure Cooker / Autoclave', info:'Hospitals sterilize surgical instruments at 121°C using pressurized steam. Pressure cookers use this to cook food 70% faster!' },
+  { c:165,  icon:'🍪', label:'Cookie Baking!',           info:'Chocolate chip cookies bake at 165–175°C. The Maillard reaction (browning) creates hundreds of flavor compounds — that amazing smell!' },
+  { c:180,  icon:'🍞', label:'Bread Baking',             info:'Bread bakes at 180–220°C. The crust gets crispy because the outside hits 180°C while the inside stays at ~90°C — two zones at once!' },
+  { c:190,  icon:'🍟', label:'Deep Frying',              info:'Perfect French fry temperature! Too cool = soggy (oil soaks in). Too hot = burned outside, raw inside. 175–190°C hits the sweet spot!' },
+  { c:233,  icon:'🍬', label:'Sugar Caramelizes',        info:'233°C is when sugar transforms into caramel. Also famous as "Fahrenheit 451" — the temperature at which paper supposedly combusts!' },
+  { c:300,  icon:'🔥', label:'Campfire',                 info:'A campfire burns 300–600°C. A gas stove flame core is ~1000°C, but the air around it is much cooler. Wood ignites at about 300°C.' },
+  { c:430,  icon:'🍕', label:'Wood-Fired Pizza Oven',    info:'Authentic Neapolitan pizza MUST be cooked at 430°C+. It cooks in just 60–90 seconds! Your home oven maxes out around 260°C.' },
+  { c:650,  icon:'🔴', label:'Red Hot Metal',            info:'Steel glows dull red at 650°C. Blacksmiths shape iron at 900–1100°C (orange-yellow glow). This is the temperature of forge welding!' },
+  { c:1000, icon:'🫧', label:'Glass Melts',              info:'Silica glass melts at ~1000°C. Glassblowers use furnaces at this temperature to shape molten glass into art. Sand melts into glass here!' },
+  { c:1085, icon:'🔌', label:'Copper Melts',             info:'Copper melts at 1085°C. Since copper is in almost all electrical wiring, a house fire can literally melt the wiring inside your walls!' },
+  { c:1538, icon:'⚙️', label:'Iron Melts',               info:'Pure iron melts at 1538°C. Blast furnaces run at this temp to produce steel. The entire Eiffel Tower (10,000 tons) is made of iron!' },
+  { c:2000, icon:'💡', label:'Tungsten Filament',        info:'Old incandescent light bulbs had tungsten filaments glowing at 2000–3300°C! That\'s why they got burning hot to touch.' },
+  { c:3422, icon:'🔩', label:'Tungsten Melts',           info:'Tungsten has the HIGHEST melting point of any element (3422°C). It\'s used in rocket nozzles, X-ray tubes, and jet engine components.' },
+  { c:5500, icon:'☀️', label:'Surface of the Sun',       info:'The Sun\'s surface (photosphere) is 5,500°C — instantly vaporizing any metal or rock. Nuclear fusion in its core powers all life on Earth!' },
+  { c:30000,icon:'⚡', label:'Lightning Bolt',           info:'A lightning bolt reaches 30,000°C — FIVE TIMES hotter than the surface of the Sun! It superheats air in nanoseconds, creating the thunder crack.' },
+  { c:15000000, icon:'🌟', label:'Core of the Sun',      info:'The Sun\'s core is 15 MILLION °C! Nuclear fusion fuses hydrogen into helium here, releasing the energy that powers every living thing on Earth.' },
+];
+
 const precipSlider = document.getElementById('precip-slider');
 function updatePrecip() {
-  const c = parseFloat(precipSlider.value);
-  const f = (c * 9/5 + 32).toFixed(0);
-  document.getElementById('precip-temp').textContent = `${c}°C / ${f}°F`;
-  let type, info;
-  if (c >= 4) { type = '🌧️ Rain'; info = 'Above 4°C — rain falls as liquid water droplets!'; }
-  else if (c >= 1) { type = '🌦️ Rain or Sleet'; info = 'Near-freezing — it could be rain, sleet, or a mix!'; }
-  else if (c >= -1) { type = '🌨️ Sleet or Snow'; info = 'Right at freezing — expect sleet or wet snow!'; }
-  else if (c >= -5) { type = '❄️ Snow'; info = 'Below 0°C — snow falls as fluffy flakes!'; }
-  else if (c >= -10) { type = '❄️ Heavy Snow'; info = 'Very cold — expect heavy, powdery snow!'; }
-  else { type = '💎 Diamond Dust'; info = 'Super cold! Tiny ice crystals fall from the sky!'; }
-  document.getElementById('precip-type').textContent = type;
-  document.getElementById('precip-info').textContent = info;
+  const idx = Math.min(Math.max(0, parseInt(precipSlider.value, 10)), TEMP_STAGES.length - 1);
+  const s = TEMP_STAGES[idx];
+  const c = s.c;
+  const fRaw = c * 9/5 + 32;
+  const fStr = Math.abs(fRaw) >= 100000
+    ? fRaw.toExponential(2) + '°F'
+    : fRaw.toLocaleString('en-US', {maximumFractionDigits:0}) + '°F';
+  const cStr = Math.abs(c) >= 100000
+    ? c.toExponential(2) + '°C'
+    : c.toLocaleString('en-US') + '°C';
+  document.getElementById('precip-temp').textContent = `${cStr} / ${fStr}`;
+  document.getElementById('precip-type').textContent = `${s.icon} ${s.label}`;
+  document.getElementById('precip-info').textContent = s.info;
 }
 precipSlider.addEventListener('input', updatePrecip);
 updatePrecip();
@@ -2075,6 +2193,275 @@ function createNoiseSource(ctx, freq, type, volume) {
     }
   });
 });
+
+// ── Sidebar Navigation & Page Switching ──
+(function(){
+  const nav     = document.getElementById('side-nav');
+  const toggle  = document.getElementById('nav-toggle');
+  const overlay = document.getElementById('nav-overlay');
+  if(!nav) return;
+
+  // Mobile open/close
+  function openNav()  { nav.classList.add('nav-open'); overlay.classList.add('nav-open'); }
+  function closeNav() { nav.classList.remove('nav-open'); overlay.classList.remove('nav-open'); }
+  toggle?.addEventListener('click', () => nav.classList.contains('nav-open') ? closeNav() : openNav());
+  overlay?.addEventListener('click', closeNav);
+
+  // Page switching
+  const pages = ['home','forecast','fieldtrip','tools','games','worldmap'];
+  let currentPage = 'home';
+
+  function showPage(pageId) {
+    currentPage = pageId;
+    pages.forEach(p => {
+      const el = document.getElementById('page-' + p);
+      if(el) el.classList.toggle('hidden', p !== pageId);
+    });
+    // Update active nav link
+    nav.querySelectorAll('.nav-link[data-page]').forEach(a => {
+      a.classList.toggle('active', a.dataset.page === pageId);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if(window.innerWidth <= 768) closeNav();
+    if(pageId === 'worldmap') setTimeout(() => window._initWorldMap?.(), 80);
+  }
+
+  nav.querySelectorAll('.nav-link[data-page]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      showPage(a.dataset.page);
+    });
+  });
+
+  // Expose globally so other parts of the app can switch pages if needed
+  window.showWeatherPage = showPage;
+})();
+
+// ── World City Weather Map ──
+(function(){
+  const CITIES=[
+    // North America – USA
+    {n:'New York',lat:40.71,lon:-74.01,c:'US'},{n:'Los Angeles',lat:34.05,lon:-118.24,c:'US'},
+    {n:'Chicago',lat:41.88,lon:-87.63,c:'US'},{n:'Houston',lat:29.76,lon:-95.37,c:'US'},
+    {n:'Phoenix',lat:33.45,lon:-112.07,c:'US'},{n:'Philadelphia',lat:39.95,lon:-75.17,c:'US'},
+    {n:'San Antonio',lat:29.42,lon:-98.49,c:'US'},{n:'San Diego',lat:32.72,lon:-117.16,c:'US'},
+    {n:'Dallas',lat:32.78,lon:-96.80,c:'US'},{n:'San Jose',lat:37.34,lon:-121.89,c:'US'},
+    {n:'Austin',lat:30.27,lon:-97.74,c:'US'},{n:'Washington DC',lat:38.91,lon:-77.04,c:'US'},
+    {n:'Las Vegas',lat:36.17,lon:-115.14,c:'US'},{n:'Seattle',lat:47.61,lon:-122.33,c:'US'},
+    {n:'Denver',lat:39.74,lon:-104.99,c:'US'},{n:'Nashville',lat:36.16,lon:-86.78,c:'US'},
+    {n:'Miami',lat:25.76,lon:-80.19,c:'US'},{n:'Atlanta',lat:33.75,lon:-84.39,c:'US'},
+    {n:'Minneapolis',lat:44.98,lon:-93.27,c:'US'},{n:'Portland',lat:45.51,lon:-122.68,c:'US'},
+    {n:'Boston',lat:42.36,lon:-71.06,c:'US'},{n:'New Orleans',lat:29.95,lon:-90.07,c:'US'},
+    {n:'Salt Lake City',lat:40.76,lon:-111.89,c:'US'},{n:'Kansas City',lat:39.10,lon:-94.58,c:'US'},
+    {n:'Cincinnati',lat:39.10,lon:-84.51,c:'US'},{n:'Pittsburgh',lat:40.44,lon:-79.99,c:'US'},
+    {n:'Cleveland',lat:41.50,lon:-81.69,c:'US'},{n:'St. Paul',lat:44.95,lon:-93.09,c:'US'},
+    {n:'Detroit',lat:42.33,lon:-83.05,c:'US'},{n:'Memphis',lat:35.15,lon:-90.05,c:'US'},
+    {n:'Louisville',lat:38.25,lon:-85.76,c:'US'},{n:'Oklahoma City',lat:35.47,lon:-97.52,c:'US'},
+    {n:'Albuquerque',lat:35.08,lon:-106.65,c:'US'},{n:'Tucson',lat:32.22,lon:-110.97,c:'US'},
+    {n:'Fresno',lat:36.74,lon:-119.79,c:'US'},{n:'Sacramento',lat:38.58,lon:-121.49,c:'US'},
+    {n:'Raleigh',lat:35.78,lon:-78.64,c:'US'},{n:'Charlotte',lat:35.23,lon:-80.84,c:'US'},
+    {n:'Indianapolis',lat:39.77,lon:-86.16,c:'US'},{n:'St. Louis',lat:38.63,lon:-90.20,c:'US'},
+    {n:'Honolulu',lat:21.31,lon:-157.86,c:'US'},{n:'Anchorage',lat:61.22,lon:-149.90,c:'US'},
+    {n:'San Francisco',lat:37.77,lon:-122.42,c:'US'},{n:'El Paso',lat:31.76,lon:-106.49,c:'US'},
+    {n:'Jacksonville',lat:30.33,lon:-81.66,c:'US'},{n:'Tampa',lat:27.95,lon:-82.46,c:'US'},
+    {n:'Omaha',lat:41.26,lon:-95.94,c:'US'},{n:'Colorado Springs',lat:38.83,lon:-104.82,c:'US'},
+    {n:'Virginia Beach',lat:36.85,lon:-75.98,c:'US'},{n:'Milwaukee',lat:43.04,lon:-87.91,c:'US'},
+    // Canada
+    {n:'Toronto',lat:43.65,lon:-79.38,c:'CA'},{n:'Montreal',lat:45.50,lon:-73.57,c:'CA'},
+    {n:'Vancouver',lat:49.28,lon:-123.12,c:'CA'},{n:'Calgary',lat:51.04,lon:-114.07,c:'CA'},
+    {n:'Edmonton',lat:53.55,lon:-113.49,c:'CA'},{n:'Ottawa',lat:45.42,lon:-75.70,c:'CA'},
+    {n:'Winnipeg',lat:49.90,lon:-97.14,c:'CA'},
+    // Mexico & Central America
+    {n:'Mexico City',lat:19.43,lon:-99.13,c:'MX'},{n:'Guadalajara',lat:20.66,lon:-103.35,c:'MX'},
+    {n:'Monterrey',lat:25.69,lon:-100.32,c:'MX'},{n:'Cancún',lat:21.16,lon:-86.85,c:'MX'},
+    {n:'Tijuana',lat:32.51,lon:-117.04,c:'MX'},{n:'Guatemala City',lat:14.64,lon:-90.51,c:'GT'},
+    {n:'San José',lat:9.93,lon:-84.08,c:'CR'},{n:'Panama City',lat:8.99,lon:-79.52,c:'PA'},
+    // Caribbean
+    {n:'Havana',lat:23.14,lon:-82.36,c:'CU'},{n:'Santo Domingo',lat:18.47,lon:-69.89,c:'DO'},
+    {n:'San Juan',lat:18.47,lon:-66.12,c:'PR'},
+    // South America
+    {n:'São Paulo',lat:-23.55,lon:-46.63,c:'BR'},{n:'Rio de Janeiro',lat:-22.91,lon:-43.17,c:'BR'},
+    {n:'Buenos Aires',lat:-34.60,lon:-58.38,c:'AR'},{n:'Lima',lat:-12.05,lon:-77.04,c:'PE'},
+    {n:'Bogotá',lat:4.71,lon:-74.07,c:'CO'},{n:'Santiago',lat:-33.45,lon:-70.67,c:'CL'},
+    {n:'Caracas',lat:10.48,lon:-66.90,c:'VE'},{n:'Quito',lat:-0.18,lon:-78.47,c:'EC'},
+    {n:'Medellín',lat:6.25,lon:-75.57,c:'CO'},{n:'Brasília',lat:-15.78,lon:-47.93,c:'BR'},
+    {n:'Montevideo',lat:-34.90,lon:-56.16,c:'UY'},{n:'Asunción',lat:-25.26,lon:-57.58,c:'PY'},
+    {n:'La Paz',lat:-16.50,lon:-68.15,c:'BO'},{n:'Guayaquil',lat:-2.20,lon:-79.89,c:'EC'},
+    {n:'Manaus',lat:-3.10,lon:-60.02,c:'BR'},{n:'Recife',lat:-8.05,lon:-34.88,c:'BR'},
+    // Europe
+    {n:'London',lat:51.51,lon:-0.13,c:'GB'},{n:'Paris',lat:48.86,lon:2.35,c:'FR'},
+    {n:'Berlin',lat:52.52,lon:13.41,c:'DE'},{n:'Madrid',lat:40.42,lon:-3.70,c:'ES'},
+    {n:'Rome',lat:41.90,lon:12.50,c:'IT'},{n:'Warsaw',lat:52.23,lon:21.01,c:'PL'},
+    {n:'Kyiv',lat:50.45,lon:30.52,c:'UA'},{n:'Bucharest',lat:44.43,lon:26.10,c:'RO'},
+    {n:'Budapest',lat:47.50,lon:19.04,c:'HU'},{n:'Vienna',lat:48.21,lon:16.37,c:'AT'},
+    {n:'Athens',lat:37.98,lon:23.73,c:'GR'},{n:'Prague',lat:50.08,lon:14.44,c:'CZ'},
+    {n:'Stockholm',lat:59.33,lon:18.07,c:'SE'},{n:'Lisbon',lat:38.72,lon:-9.14,c:'PT'},
+    {n:'Copenhagen',lat:55.68,lon:12.57,c:'DK'},{n:'Amsterdam',lat:52.37,lon:4.90,c:'NL'},
+    {n:'Brussels',lat:50.85,lon:4.35,c:'BE'},{n:'Oslo',lat:59.91,lon:10.75,c:'NO'},
+    {n:'Helsinki',lat:60.17,lon:24.94,c:'FI'},{n:'Zurich',lat:47.38,lon:8.54,c:'CH'},
+    {n:'Dublin',lat:53.35,lon:-6.26,c:'IE'},{n:'Barcelona',lat:41.39,lon:2.16,c:'ES'},
+    {n:'Munich',lat:48.14,lon:11.58,c:'DE'},{n:'Hamburg',lat:53.58,lon:10.02,c:'DE'},
+    {n:'Frankfurt',lat:50.11,lon:8.68,c:'DE'},{n:'Milan',lat:45.46,lon:9.19,c:'IT'},
+    {n:'Lyon',lat:45.76,lon:4.84,c:'FR'},{n:'Marseille',lat:43.30,lon:5.37,c:'FR'},
+    {n:'Rotterdam',lat:51.92,lon:4.48,c:'NL'},{n:'Edinburgh',lat:55.95,lon:-3.19,c:'GB'},
+    {n:'Belgrade',lat:44.79,lon:20.45,c:'RS'},{n:'Sofia',lat:42.70,lon:23.32,c:'BG'},
+    {n:'Zagreb',lat:45.82,lon:15.98,c:'HR'},{n:'Riga',lat:56.95,lon:24.11,c:'LV'},
+    {n:'Vilnius',lat:54.69,lon:25.28,c:'LT'},{n:'Tallinn',lat:59.44,lon:24.75,c:'EE'},
+    {n:'Bratislava',lat:48.15,lon:17.11,c:'SK'},{n:'Ljubljana',lat:46.06,lon:14.51,c:'SI'},
+    {n:'Sarajevo',lat:43.86,lon:18.41,c:'BA'},{n:'Skopje',lat:42.00,lon:21.43,c:'MK'},
+    {n:'Tirana',lat:41.33,lon:19.82,c:'AL'},{n:'Chisinau',lat:47.01,lon:28.86,c:'MD'},
+    {n:'Minsk',lat:53.90,lon:27.56,c:'BY'},{n:'Valletta',lat:35.90,lon:14.51,c:'MT'},
+    {n:'Reykjavik',lat:64.14,lon:-21.90,c:'IS'},{n:'Geneva',lat:46.20,lon:6.14,c:'CH'},
+    {n:'Nice',lat:43.71,lon:7.26,c:'FR'},{n:'Naples',lat:40.85,lon:14.27,c:'IT'},
+    {n:'Thessaloniki',lat:40.64,lon:22.94,c:'GR'},{n:'Kraków',lat:50.06,lon:19.94,c:'PL'},
+    {n:'Seville',lat:37.39,lon:-5.98,c:'ES'},{n:'Valencia',lat:39.47,lon:-0.38,c:'ES'},
+    {n:'Bilbao',lat:43.26,lon:-2.93,c:'ES'},{n:'Porto',lat:41.15,lon:-8.61,c:'PT'},
+    {n:'Manchester',lat:53.48,lon:-2.24,c:'GB'},{n:'Birmingham',lat:52.48,lon:-1.90,c:'GB'},
+    // Middle East
+    {n:'Istanbul',lat:41.01,lon:28.98,c:'TR'},{n:'Ankara',lat:39.93,lon:32.86,c:'TR'},
+    {n:'Tehran',lat:35.69,lon:51.39,c:'IR'},{n:'Baghdad',lat:33.32,lon:44.37,c:'IQ'},
+    {n:'Riyadh',lat:24.71,lon:46.68,c:'SA'},{n:'Dubai',lat:25.20,lon:55.27,c:'AE'},
+    {n:'Abu Dhabi',lat:24.45,lon:54.38,c:'AE'},{n:'Doha',lat:25.29,lon:51.53,c:'QA'},
+    {n:'Kuwait City',lat:29.38,lon:47.98,c:'KW'},{n:'Muscat',lat:23.59,lon:58.38,c:'OM'},
+    {n:'Amman',lat:31.95,lon:35.93,c:'JO'},{n:'Beirut',lat:33.89,lon:35.50,c:'LB'},
+    {n:'Tel Aviv',lat:32.09,lon:34.78,c:'IL'},{n:'Jerusalem',lat:31.77,lon:35.21,c:'IL'},
+    {n:'Damascus',lat:33.51,lon:36.28,c:'SY'},{n:'Baku',lat:40.41,lon:49.87,c:'AZ'},
+    {n:'Yerevan',lat:40.18,lon:44.50,c:'AM'},{n:'Tbilisi',lat:41.69,lon:44.80,c:'GE'},
+    // Central Asia
+    {n:'Tashkent',lat:41.30,lon:69.24,c:'UZ'},{n:'Almaty',lat:43.22,lon:76.85,c:'KZ'},
+    {n:'Bishkek',lat:42.87,lon:74.57,c:'KG'},{n:'Ashgabat',lat:37.96,lon:58.33,c:'TM'},
+    {n:'Kabul',lat:34.56,lon:69.21,c:'AF'},
+    // South Asia
+    {n:'Delhi',lat:28.70,lon:77.10,c:'IN'},{n:'Mumbai',lat:19.08,lon:72.88,c:'IN'},
+    {n:'Bangalore',lat:12.97,lon:77.59,c:'IN'},{n:'Kolkata',lat:22.57,lon:88.36,c:'IN'},
+    {n:'Chennai',lat:13.08,lon:80.27,c:'IN'},{n:'Hyderabad',lat:17.39,lon:78.49,c:'IN'},
+    {n:'Pune',lat:18.52,lon:73.86,c:'IN'},{n:'Karachi',lat:24.86,lon:67.00,c:'PK'},
+    {n:'Lahore',lat:31.52,lon:74.36,c:'PK'},{n:'Dhaka',lat:23.81,lon:90.41,c:'BD'},
+    {n:'Kathmandu',lat:27.72,lon:85.32,c:'NP'},{n:'Colombo',lat:6.93,lon:79.86,c:'LK'},
+    // East & Southeast Asia
+    {n:'Tokyo',lat:35.68,lon:139.65,c:'JP'},{n:'Osaka',lat:34.69,lon:135.50,c:'JP'},
+    {n:'Sapporo',lat:43.06,lon:141.35,c:'JP'},{n:'Beijing',lat:39.90,lon:116.41,c:'CN'},
+    {n:'Shanghai',lat:31.23,lon:121.47,c:'CN'},{n:'Guangzhou',lat:23.13,lon:113.26,c:'CN'},
+    {n:'Shenzhen',lat:22.54,lon:114.06,c:'CN'},{n:'Chengdu',lat:30.57,lon:104.07,c:'CN'},
+    {n:'Wuhan',lat:30.59,lon:114.31,c:'CN'},{n:'Chongqing',lat:29.43,lon:106.91,c:'CN'},
+    {n:'Hong Kong',lat:22.32,lon:114.17,c:'HK'},{n:'Seoul',lat:37.57,lon:126.98,c:'KR'},
+    {n:'Busan',lat:35.10,lon:129.04,c:'KR'},{n:'Taipei',lat:25.03,lon:121.57,c:'TW'},
+    {n:'Singapore',lat:1.35,lon:103.82,c:'SG'},{n:'Bangkok',lat:13.76,lon:100.50,c:'TH'},
+    {n:'Hanoi',lat:21.03,lon:105.85,c:'VN'},{n:'Ho Chi Minh City',lat:10.82,lon:106.63,c:'VN'},
+    {n:'Jakarta',lat:-6.21,lon:106.85,c:'ID'},{n:'Surabaya',lat:-7.25,lon:112.75,c:'ID'},
+    {n:'Kuala Lumpur',lat:3.14,lon:101.69,c:'MY'},{n:'Manila',lat:14.60,lon:120.98,c:'PH'},
+    {n:'Yangon',lat:16.84,lon:96.17,c:'MM'},{n:'Phnom Penh',lat:11.56,lon:104.93,c:'KH'},
+    {n:'Vientiane',lat:17.98,lon:102.63,c:'LA'},{n:'Ulaanbaatar',lat:47.89,lon:106.91,c:'MN'},
+    // Russia
+    {n:'Moscow',lat:55.75,lon:37.62,c:'RU'},{n:'St. Petersburg',lat:59.95,lon:30.32,c:'RU'},
+    {n:'Novosibirsk',lat:54.98,lon:82.90,c:'RU'},{n:'Yekaterinburg',lat:56.85,lon:60.61,c:'RU'},
+    {n:'Vladivostok',lat:43.12,lon:131.89,c:'RU'},
+    // Africa
+    {n:'Cairo',lat:30.04,lon:31.24,c:'EG'},{n:'Lagos',lat:6.52,lon:3.38,c:'NG'},
+    {n:'Kinshasa',lat:-4.33,lon:15.32,c:'CD'},{n:'Johannesburg',lat:-26.20,lon:28.05,c:'ZA'},
+    {n:'Cape Town',lat:-33.92,lon:18.42,c:'ZA'},{n:'Nairobi',lat:-1.29,lon:36.82,c:'KE'},
+    {n:'Casablanca',lat:33.57,lon:-7.59,c:'MA'},{n:'Rabat',lat:34.02,lon:-6.84,c:'MA'},
+    {n:'Algiers',lat:36.74,lon:3.09,c:'DZ'},{n:'Tunis',lat:36.81,lon:10.18,c:'TN'},
+    {n:'Tripoli',lat:32.89,lon:13.19,c:'LY'},{n:'Khartoum',lat:15.50,lon:32.56,c:'SD'},
+    {n:'Addis Ababa',lat:9.03,lon:38.75,c:'ET'},{n:'Dar es Salaam',lat:-6.79,lon:39.21,c:'TZ'},
+    {n:'Luanda',lat:-8.84,lon:13.29,c:'AO'},{n:'Accra',lat:5.60,lon:-0.19,c:'GH'},
+    {n:'Abidjan',lat:5.34,lon:-4.02,c:'CI'},{n:'Dakar',lat:14.72,lon:-17.47,c:'SN'},
+    {n:'Kampala',lat:0.35,lon:32.58,c:'UG'},{n:'Harare',lat:-17.83,lon:31.03,c:'ZW'},
+    {n:'Lusaka',lat:-15.39,lon:28.32,c:'ZM'},{n:'Maputo',lat:-25.97,lon:32.57,c:'MZ'},
+    {n:'Antananarivo',lat:-18.91,lon:47.54,c:'MG'},{n:'Abuja',lat:9.08,lon:7.40,c:'NG'},
+    {n:'Mogadishu',lat:2.05,lon:45.34,c:'SO'},{n:'Bamako',lat:12.65,lon:-8.00,c:'ML'},
+    {n:'Douala',lat:4.05,lon:9.70,c:'CM'},
+    // Oceania
+    {n:'Sydney',lat:-33.87,lon:151.21,c:'AU'},{n:'Melbourne',lat:-37.81,lon:144.96,c:'AU'},
+    {n:'Brisbane',lat:-27.47,lon:153.03,c:'AU'},{n:'Perth',lat:-31.95,lon:115.86,c:'AU'},
+    {n:'Adelaide',lat:-34.93,lon:138.60,c:'AU'},{n:'Auckland',lat:-36.85,lon:174.76,c:'NZ'},
+    {n:'Wellington',lat:-41.29,lon:174.78,c:'NZ'},{n:'Suva',lat:-18.14,lon:178.44,c:'FJ'},
+    {n:'Port Moresby',lat:-9.44,lon:147.18,c:'PG'},
+  ];
+
+  let mapObj=null, mapReady=false, cache=[];
+
+  function tStr(c){ return useCelsius?Math.round(c)+'°C':Math.round(c*9/5+32)+'°F'; }
+
+  function makeIcon(emoji,temp){
+    return L.divIcon({
+      className:'',
+      html:`<div class="cwm-pin"><span class="cwm-e">${emoji}</span><span class="cwm-t">${temp}</span></div>`,
+      iconSize:[68,32], iconAnchor:[34,32], popupAnchor:[0,-34]
+    });
+  }
+
+  function refreshMarkers(){
+    cache.forEach(item=>{
+      const [,emoji]=wmo(item.code);
+      item.marker.setIcon(makeIcon(emoji, tStr(item.celsius)));
+    });
+  }
+
+  function loadLeaflet(){
+    return new Promise(resolve=>{
+      if(window.L){ resolve(); return; }
+      const css=document.createElement('link');
+      css.rel='stylesheet';
+      css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(css);
+      const s=document.createElement('script');
+      s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      s.onload=resolve;
+      s.onerror=resolve; // don't hang forever if CDN is down
+      document.head.appendChild(s);
+    });
+  }
+
+  async function initWorldMap(){
+    if(mapReady){ mapObj?.invalidateSize(); refreshMarkers(); return; }
+    mapReady=true;
+    const loadingEl=document.getElementById('worldmap-loading');
+    await loadLeaflet();
+    if(!window.L){ if(loadingEl) loadingEl.textContent='⚠️ Map failed to load — check your internet connection.'; return; }
+
+    mapObj=L.map('worldmap-container',{center:[20,0],zoom:2,minZoom:2,maxZoom:13});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:19
+    }).addTo(mapObj);
+
+    // Fetch cities in batches of 50
+    let done=0;
+    const total=CITIES.length;
+    for(let i=0;i<CITIES.length;i+=50){
+      const batch=CITIES.slice(i,i+50);
+      const lats=batch.map(c=>c.lat).join(',');
+      const lons=batch.map(c=>c.lon).join(',');
+      try{
+        const raw=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current=temperature_2m,weather_code&timezone=auto`).then(r=>r.json());
+        const arr=Array.isArray(raw)?raw:[raw];
+        arr.forEach((wx,j)=>{
+          if(!wx?.current) return;
+          const city=batch[j];
+          const [condText,emoji]=wmo(wx.current.weather_code);
+          const celsius=wx.current.temperature_2m;
+          const temp=tStr(celsius);
+          const marker=L.marker([city.lat,city.lon],{icon:makeIcon(emoji,temp)}).addTo(mapObj);
+          const safeN=city.n.replace(/'/g,"\\'");
+          marker.bindPopup(`<div class="cwm-popup"><span class="cwm-pcity">${city.n}</span><span class="cwm-pcountry">${city.c}</span><div class="cwm-pcond">${emoji} ${condText}</div><div class="cwm-ptemp" id="cwmpt${i+j}">${temp}</div><button class="cwm-go" onclick="window._cwmGo(${city.lat},${city.lon},'${safeN}','${city.c}')">🔍 Full Forecast</button></div>`);
+          cache.push({marker,celsius,code:wx.current.weather_code});
+        });
+        done+=batch.length;
+        if(loadingEl) loadingEl.textContent=`⏳ Loading… ${done}/${total} cities`;
+      }catch(e){ console.warn('World map batch error',e); }
+    }
+    if(loadingEl) loadingEl.classList.add('done');
+  }
+
+  window._initWorldMap=initWorldMap;
+  window._cwmGo=function(lat,lon,name,country){
+    fetchWeather(lat,lon,name,country);
+    window.showWeatherPage?.('home');
+  };
+
+  // Refresh temps when unit is toggled
+  document.getElementById('unit-toggle')?.addEventListener('click',()=>setTimeout(refreshMarkers,60));
+})();
 
 // ── Boot ──
 if(navigator.geolocation){
