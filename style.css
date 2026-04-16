@@ -231,6 +231,10 @@ body { font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 0; }
 .map-btn:hover  { transform:translateY(-2px); }
 .map-btn:active { transform:translateY(2px); box-shadow:0 1px 0 #ccc; }
 .map-btn.active { background:#4caf50; color:white; box-shadow:0 3px 0 #1b5e20; }
+.windy-wrapper { position:relative; }
+.windy-overlay { position:absolute; inset:0; z-index:2; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.windy-overlay.active { display:none; }
+.windy-hint { background:rgba(0,0,0,.55); color:#fff; padding:8px 18px; border-radius:20px; font-family:'Nunito',sans-serif; font-weight:800; font-size:.85rem; pointer-events:none; }
 #windy-map { width:100%; height:420px; border:none; display:block; }
 .map-tip { padding:10px 16px; font-size:.8rem; font-weight:800; color:#90a4ae; background:rgba(255,255,255,.95); border-top:2px solid rgba(0,0,0,.05); }
 

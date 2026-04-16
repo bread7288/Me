@@ -621,7 +621,10 @@
           <button class="map-btn" data-layer="cosc">⚫ CO</button>
           <button class="map-btn" data-layer="dust">🟤 Dust</button>
         </div>
-        <iframe id="windy-map" allowfullscreen></iframe>
+        <div class="windy-wrapper">
+          <div class="windy-overlay" id="windy-overlay"><span class="windy-hint">🗺️ Click to interact with map</span></div>
+          <iframe id="windy-map" allowfullscreen></iframe>
+        </div>
         <div class="map-tip">🌍 Powered by Windy — real ECMWF forecast + Copernicus pollution data • Tap anywhere for a local forecast!</div>
       </div>
 

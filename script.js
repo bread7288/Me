@@ -620,6 +620,14 @@ function initWindyMap(lat,lon) {
   document.getElementById('windy-map').src=buildWindyUrl(lat,lon,windyLayer);
 }
 
+// Windy overlay — click to activate, re-lock when page scrolls
+document.getElementById('windy-overlay')?.addEventListener('click', function(){
+  this.classList.add('active');
+});
+window.addEventListener('scroll', ()=>{
+  document.getElementById('windy-overlay')?.classList.remove('active');
+}, {passive:true});
+
 // Layer buttons
 document.querySelectorAll('.map-btn[data-layer]').forEach(btn=>{
   btn.addEventListener('click',()=>{
