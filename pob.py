@@ -1,3 +1,14 @@
 import random
-print("Password Guesser")
-randint(0, 9999)
+
+
+secret_number = random.randint(-999, 999)
+print(secret_number)
+while True:
+  guess = int(input("guess a number between 0 and 999: "))
+  print(secret_number)
+  if guess < secret_number:
+    print("tooooooooo low? try a bigger numbr")
+  elif guess > secret_number:
+    print("tooooooo hi? try agan")
+  else:
+    print("you win")
